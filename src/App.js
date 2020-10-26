@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { Box, Flex, Heading } from 'theme-ui'
+import TypingArea from './components/TypingArea'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Flex
+      sx={{
+        maxWidth: 800,
+        mx: 'auto',
+        py: 3,
+        justifyContent: 'center',
+        flexDirection: 'column',
+        minHeight: '100vh',
+      }}
+    >
+      <Box
+        sx={{
+          py: 3,
+        }}
+      >
+        <Heading>Typefaster</Heading>
+      </Box>
+      <Flex
+        sx={{
+          minHeight: 105,
+          flexGrow: 1,
+          fontSize: 21,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          fontFamily: 'monospace',
+          color: 'GrayText',
+          lineHeight: '35px',
+          whiteSpace: 'pre-wrap',
+        }}
+      >
+        <TypingArea />
+      </Flex>
+      <Box
+        sx={{
+          py: 3,
+        }}
+      >
+        &copy; 2020 / Dandi Wiratsangka
+      </Box>
+    </Flex>
+  )
 }
 
-export default App;
+export default App
