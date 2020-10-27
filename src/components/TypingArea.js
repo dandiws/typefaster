@@ -58,7 +58,7 @@ const Letter = memo(
             : undefined,
       }}
     >
-      {letter.original || letter.typed}
+      {letter.typed || letter.original}
     </Text>
   ),
   (prevProps, nextProps) =>
@@ -97,7 +97,7 @@ const TypingArea = memo(() => {
         setTypedLetter('')
       }
         
-      else if (e.key.toLowerCase()==='f'){
+      else if (e.key.toLowerCase()==='f' && e.altKey){
         e.preventDefault()
         focusInput()
       }
@@ -217,7 +217,7 @@ const TypingArea = memo(() => {
             cursor: 'pointer'
           }}
         >
-          Click or Press F to focus
+          Click or Press Alt+F to focus
         </Flex>
       )}
     </Box>

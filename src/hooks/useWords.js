@@ -39,28 +39,30 @@ function reducer(state, { type, payload }) {
       if (state.words.length <= 0) return state
 
       const typedWord = payload.typed.split('')
-      const currentLetters = currentWord.letters
+      const originalLetters = currentWord.letters.filter(l=>l.original)
+      let updatedLetters = originalLetters.map((l, i) => ({
+        ...l,
+        typed: typedWord[i],
+        correctness:
+          typedWord[i] &&
+          (l.original === typedWord[i] ? 'correct' : 'incorrect'),
+      }))
 
-      const updatedWord = {
-        ...currentWord,
-        letters: currentLetters.map((l, i) => ({
-          ...l,
-          typed: typedWord[i],
-          correctness:
-            typedWord[i] &&
-            (l.original === typedWord[i] ? 'correct' : 'incorrect'),
-        })),
-      }
+      const extraLetters = typedWord.slice(currentWord.originalWord.length)
 
-      const extraLetters = typedWord.slice(currentLetters.length)
-      updatedWord.letters = [
-        ...updatedWord.letters,
+      updatedLetters = [
+        ...updatedLetters,
         ...extraLetters.map((l) => ({
           original: undefined,
           typed: l,
           correctness: 'extra',
         })),
       ]
+
+      const updatedWord = {
+        ...currentWord,
+        letters: updatedLetters
+      }
 
       return {
         ...state,
