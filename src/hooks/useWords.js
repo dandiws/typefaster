@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from 'react'
+import { createContext, createRef, useEffect, useReducer } from 'react'
 import { sampleSize } from 'lodash'
 
 export const WordsContext = createContext()
@@ -23,14 +23,16 @@ async function fetchWordsJSON(lang) {
 function reducer(state, { type, payload }) {
   const [wordIdx, letterIdx] = state.cursorPosition
   const currentWord = state.words[wordIdx]
-  console.log({ type, payload })
+  const N_WORD_TOBE_GENERATED = 50 //initial word count
+  const APPEND_WORD_TRESHOLD = 20 //minimal word has not been typed which new words will be generated (appended)
 
   switch (type) {
     case 'FETCH_WORDS_JSON': {
       return {
         ...state,
         wordsJson: payload.wordsJson,
-        words: createWordCollection(payload.wordsJson.words, 100),
+        words: createWordCollection(payload.wordsJson.words, N_WORD_TOBE_GENERATED),
+        cursorPosition: [0,0]
       }
     }
     case 'UPDATE_WORD': {
@@ -105,6 +107,36 @@ function reducer(state, { type, payload }) {
     case 'SPACE_KEY': {
       // if cursor at first letter of word, do nothing
       if (letterIdx === 0) return state
+      const nextWord = state.words[wordIdx+1]
+
+      if(currentWord.elRef.current && nextWord){
+        const currY = currentWord.elRef.current.getBoundingClientRect().y
+        const nextY = nextWord.elRef.current.getBoundingClientRect().y
+        // new line
+        if(currY!==nextY){
+          let updatedWord = state.words.map((w,i)=>{
+            if(i<=wordIdx) return {
+              ...w,
+              show: false
+            }
+
+            return w
+          })
+
+          if(state.words.length-wordIdx < APPEND_WORD_TRESHOLD){
+            updatedWord = [...updatedWord, ...createWordCollection(state.wordsJson.words,N_WORD_TOBE_GENERATED)].map((w,i)=>({
+              ...w,
+              idx: i
+            }))
+          }
+
+          return {
+            ...state,
+            words: updatedWord,
+            cursorPosition: [wordIdx + 1, 0],
+          }
+        }
+      }
 
       // go to next word
       return {
@@ -143,7 +175,6 @@ function reducer(state, { type, payload }) {
           ),
         }
       }
-      console.log(letterIdx)
 
       return {
         ...state,
@@ -169,7 +200,7 @@ function reducer(state, { type, payload }) {
     case 'REFRESH_WORDS': {
       return {
         ...state,
-        words: createWordCollection(state.wordsJson.words, 100),
+        words: createWordCollection(state.wordsJson.words, N_WORD_TOBE_GENERATED),
         cursorPosition: [0, 0],
       }
     }
@@ -196,8 +227,27 @@ const useWordsProvider = (lang) => {
   }
 }
 
+function calculateLineOfWord(words){
+  const ys = words.map(w=>w.elRef.current.getBoundingClientRect().y)
+  const uniqueYs = [...new Set(ys)].reduce((acc,curr,i)=>({
+    ...acc,
+    [curr]: i
+  }),{})
+
+  // line number is index of uniqueYs
+  return words.map((w,i)=> {
+    const y = ys[i]
+    return {
+      ...w,
+      line: uniqueYs[y]
+    }
+  })
+}
+
 function createWordObjectFromString(s) {
   return {
+    show: true,
+    elRef: createRef(),
     originalWord: s,
     letters: `${s}`.split('').map((l) => ({
       original: l,
@@ -214,6 +264,6 @@ function createWordCollection(arrOfString, n = undefined) {
   return arrOfString.map((s, i) => ({
     ...createWordObjectFromString(s),
     idx: i,
-    key: s + i,
+    key: s + i+Math.random()*999,
   }))
 }

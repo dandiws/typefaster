@@ -6,11 +6,21 @@ const defaultConfig = {
   time: 30,
 }
 
-function configReducer(state, action) {}
+function configReducer(state, action) {
+  switch(action.type){
+    case 'CHANGE_LANGUAGE':
+      return {
+        ...state,
+        lang: action.payload.lang
+      }
+    default:
+      return state
+  }
+}
 
-const AppConfigContext = createContext(defaultConfig)
+export const AppConfigContext = createContext(defaultConfig)
 
-const AppConfigProvider = ({ children, initialConfig = defaultConfig }) => {
+export const AppConfigProvider = ({ children, initialConfig = defaultConfig }) => {
   const [config, dispatch] = useReducer(configReducer, initialConfig)
 
   useEffect(() => {
@@ -18,10 +28,8 @@ const AppConfigProvider = ({ children, initialConfig = defaultConfig }) => {
   }, [config])
 
   return (
-    <AppConfigContext.Provider value={config}>
+    <AppConfigContext.Provider value={[config, dispatch]}>
       {children}
     </AppConfigContext.Provider>
   )
 }
-
-export { AppConfigContext, AppConfigProvider }

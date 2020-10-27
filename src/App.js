@@ -1,8 +1,12 @@
-import { Box, Flex, Heading } from 'theme-ui'
+import { useContext, useEffect } from 'react'
+import { Box, Button, Divider, Flex, Heading, Text } from 'theme-ui'
 import TypingArea from './components/TypingArea'
+import { AppConfigContext } from './hooks/useConfig'
 import { WordsProvider } from './hooks/useWords'
 
 const App = () => {
+  const [config, dispatch] = useContext(AppConfigContext)
+
   return (
     <Flex
       sx={{
@@ -14,13 +18,30 @@ const App = () => {
         minHeight: '100vh',
       }}
     >
-      <Box
+      <Flex
         sx={{
           py: 3,
+          justifyContent: 'space-between',
+          alignItems:'center'
         }}
       >
         <Heading>Typefaster</Heading>
-      </Box>
+        <Box>
+          <Button type="button" role="button" sx={{
+            bg: 'transparent',
+            py:0,
+            px:1,
+            color: config.lang==='id' ? '#2186fa' : 'gray'
+          }} onClick={e=>dispatch({type:'CHANGE_LANGUAGE', payload:{lang: 'id'}})}>id</Button>
+          <Box as="span" sx={{color:'gray',mx:2}}>/</Box>
+          <Button type="button" role="button" sx={{
+            bg: 'transparent',
+            py:0,
+            px:1,
+            color: config.lang==='en' ? '#2186fa' : 'gray'
+          }} onClick={e=>dispatch({type:'CHANGE_LANGUAGE', payload:{lang: 'en'}})}>en</Button>
+        </Box>
+      </Flex>
       <Flex
         sx={{
           minHeight: 105,
@@ -28,23 +49,21 @@ const App = () => {
           fontSize: 21,
           flexDirection: 'column',
           justifyContent: 'center',
-          fontFamily: 'monospace',
-          color: 'GrayText',
-          lineHeight: '35px',
-          whiteSpace: 'pre-wrap',
         }}
       >
-        <WordsProvider lang="en">
+        <WordsProvider lang={config.lang}>
           <TypingArea />
         </WordsProvider>
       </Flex>
-      <Box
+      <Flex
         sx={{
           py: 3,
+          justifyContent:'center',
+          color:'GrayText'
         }}
       >
         &copy; 2020 / Dandi Wiratsangka
-      </Box>
+      </Flex>
     </Flex>
   )
 }

@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react'
@@ -12,8 +13,9 @@ import { WordsContext } from '../hooks/useWords'
 
 const Word = memo(
   ({ word, cursorIndex }) => {
-    return (
+    return word.show && (
       <Text
+        ref={word.elRef}
         as="span"
         sx={{
           display: 'inline-block',
@@ -31,7 +33,7 @@ const Word = memo(
       </Text>
     )
   },
-  (prevProps, nextProps) => prevProps.cursorIndex === nextProps.cursorIndex
+  (prevProps, nextProps) => prevProps.cursorIndex === nextProps.cursorIndex && prevProps.word.show === nextProps.word.show
 )
 
 const Letter = memo(
@@ -89,8 +91,18 @@ const TypingArea = memo(() => {
 
   const documentKeyDownHandler = useCallback(
     (e) => {
-      if (e.key === 'Enter' && e.shiftKey)
-        return dispatch({ type: 'REFRESH_WORDS' })
+
+      if (e.key === 'Enter' && e.shiftKey){
+        dispatch({ type: 'REFRESH_WORDS' })
+        setTypedLetter('')
+      }
+        
+      else if (e.key.toLowerCase()==='f'){
+        e.preventDefault()
+        focusInput()
+      }
+
+      return
     },
     [dispatch]
   )
@@ -144,13 +156,22 @@ const TypingArea = memo(() => {
     dispatch({ type: 'UPDATE_WORD', payload: { typed: typedLetter } })
   }, [typedLetter, dispatch])
 
+  // useLayoutEffect(()=>{
+  //   console.log("HELO FROM ")
+  //   dispatch({type:'CALCULATE_LINE'})
+  // },[dispatch])
+
   return (
     <Box
       sx={{
-        height: 105,
+        height: 70,
         overflowY: 'hidden',
         position: 'relative',
         px: 1,
+        fontFamily: 'monospace',
+        color: 'GrayText',
+        lineHeight: '35px',
+        whiteSpace: 'pre-wrap',
       }}
     >
       <Box sx={{ filter: blur && 'blur(5px)' }}>
@@ -193,9 +214,10 @@ const TypingArea = memo(() => {
             justifyContent: 'center',
             alignItems: 'center',
             color: 'white',
+            cursor: 'pointer'
           }}
         >
-          <span>Click to type</span>
+          Click or Press F to focus
         </Flex>
       )}
     </Box>
