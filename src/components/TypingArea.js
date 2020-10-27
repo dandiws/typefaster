@@ -1,131 +1,14 @@
-import React, { memo, useEffect, useReducer } from 'react'
-import { Box, Text } from 'theme-ui'
-import { generateWords } from '../utils/stopwords.id'
-
-let initialWords = generateWords().map((w, i) => ({
-  idx: i,
-  key: w + i,
-  originalWord: w,
-  letters: `${w}`.split('').map((l) => ({
-    original: l,
-    typed: undefined,
-    correctness: undefined,
-  })),
-  // hasExtraLetter: false,
-  correctness: undefined,
-}))
-
-const initialState = {
-  words: initialWords,
-  cursorPosition: [0, 0],
-}
-
-function reducer(state, { type, payload }) {
-  const [wordIdx, letterIdx] = state.cursorPosition
-  const currentWord = state.words[wordIdx]
-
-  switch (type) {
-    case 'INSERT_LETTER': {
-      const isExtraLetter = letterIdx >= currentWord.originalWord.length
-      let updatedWord
-      if (isExtraLetter) {
-        const extraLetter = {
-          original: null,
-          typed: payload.key,
-          correctness: 'extra',
-        }
-        updatedWord = {
-          ...currentWord,
-          letters: [...currentWord.letters, extraLetter],
-        }
-      } else {
-        const currentLetter = currentWord.letters[letterIdx]
-        const updatedLetter = {
-          ...currentLetter,
-          typed: payload.key,
-          correctness:
-            payload.key === currentLetter.original ? 'correct' : 'incorrect',
-        }
-
-        updatedWord = {
-          ...currentWord,
-          letters: currentWord.letters.map((l, i) =>
-            i === letterIdx ? updatedLetter : l
-          ),
-        }
-      }
-
-      return {
-        words: state.words.map((w) => (w.idx === wordIdx ? updatedWord : w)),
-        cursorPosition: [wordIdx, letterIdx + 1],
-      }
-    }
-    case 'SPACE_KEY': {
-      // if cursor at first letter of word, do nothing
-      if (letterIdx === 0) return state
-
-      // go to next word
-      return {
-        words: state.words,
-        cursorPosition: [wordIdx + 1, 0],
-      }
-    }
-    case 'DELETE_LETTER': {
-      // if cursor at first letter of word, delete nothing
-      if (letterIdx === 0) return state
-
-      const lastTypedIndex = letterIdx - 1
-      const lastTyped = currentWord.letters[lastTypedIndex]
-      const isExtraLetter = !lastTyped.original
-      let updatedWord
-
-      // if extra letter remove from array of letters,
-      // otherwise remove typed and correctness
-      if (isExtraLetter) {
-        updatedWord = {
-          ...currentWord,
-          letters: currentWord.letters.slice(0, -1),
-        }
-      } else {
-        const updatedLastTyped = {
-          ...lastTyped,
-          typed: undefined,
-          correctness: undefined,
-        }
-
-        updatedWord = {
-          ...currentWord,
-          letters: currentWord.letters.map((l, i) =>
-            i === lastTypedIndex ? updatedLastTyped : l
-          ),
-        }
-      }
-
-      return {
-        words: state.words.map((w) => (w.idx === wordIdx ? updatedWord : w)),
-        cursorPosition: [wordIdx, letterIdx - 1],
-      }
-    }
-    case 'DELETE_WORD': {
-      const updatedWord = {
-        ...currentWord,
-        letters: currentWord.originalWord.split('').map((l) => ({
-          original: l,
-          typed: undefined,
-          correctness: undefined,
-        })),
-      }
-      return {
-        words: state.words.map((w) => (w.idx === wordIdx ? updatedWord : w)),
-        cursorPosition: [wordIdx, 0],
-      }
-    }
-
-    default:
-      return state
-  }
-}
-// 0 1 0 1 0
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { Box, Flex, Input, Text } from 'theme-ui'
+import { WordsContext } from '../hooks/useWords'
 
 const Word = memo(
   ({ word, cursorIndex }) => {
@@ -182,34 +65,84 @@ const Letter = memo(
     prevProps.cursor === nextProps.cursor
 )
 
+const DISABLED_KEYS = [
+  'arrowup',
+  'Arrowdown',
+  'arrowleft',
+  'arrowright',
+  'home',
+  'end',
+  'tab',
+]
+
+const DISABLED_CTRL = ['a', 'c', 'v']
+
 const TypingArea = memo(() => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [typedLetter, setTypedLetter] = useState('')
+  const { state, dispatch } = useContext(WordsContext)
+  const inputRef = useRef()
+  const [blur, setBlur] = useState(false)
+
+  // useHotkeys('shift+enter', () => {
+  //   dispatch({ type: 'REFRESH_WORDS' })
+  // })
+
+  const documentKeyDownHandler = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && e.shiftKey)
+        return dispatch({ type: 'REFRESH_WORDS' })
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      console.log(e)
-      if (e.key === 'Backspace' && e.ctrlKey) {
-        return dispatch({ type: 'DELETE_WORD' })
-      }
+    document.addEventListener('keydown', documentKeyDownHandler)
+    return () => document.removeEventListener('keydown', documentKeyDownHandler)
+  }, [documentKeyDownHandler])
 
-      switch (e.key) {
-        case ' ':
-          return dispatch({ type: 'SPACE_KEY' })
-        case 'Backspace':
-          return dispatch({ type: 'DELETE_LETTER' })
-        default:
-          return dispatch({ type: 'INSERT_LETTER', payload: { key: e.key } })
-      }
+  useEffect(() => {
+    const isInputFocused =
+      inputRef.current && inputRef.current === document.activeElement
+
+    if (isInputFocused) setBlur(false)
+    else setBlur(true)
+  }, [inputRef])
+
+  const handleKeyDown = (e) => {
+    if (DISABLED_KEYS.includes(e.key.toLowerCase())) {
+      e.preventDefault()
+      return
     }
 
-    document.addEventListener('keydown', handleKeyDown)
+    if (DISABLED_CTRL.includes(e.key.toLowerCase()) && e.ctrlKey) {
+      e.preventDefault()
+      return
+    }
 
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    // if (e.key === ' ') {
+    //   setTypedLetter('')
+    //   dispatch({ type: 'SPACE_KEY' })
+    // }
+  }
 
-  // useEffect(() => {
-  //   console.log(state.words[state.cursorPosition[0]])
-  // }, [state])
+  const focusInput = () => {
+    return inputRef.current.focus()
+  }
+
+  const handleInputChange = (e) => {
+    return setTypedLetter(e.target.value)
+  }
+
+  useEffect(() => {
+    if (typedLetter.endsWith(' ')) {
+      setTypedLetter('')
+      dispatch({ type: 'SPACE_KEY' })
+      // setTimeout(() => , 0)
+      return
+    }
+
+    dispatch({ type: 'UPDATE_WORD', payload: { typed: typedLetter } })
+  }, [typedLetter, dispatch])
 
   return (
     <Box
@@ -220,15 +153,51 @@ const TypingArea = memo(() => {
         px: 1,
       }}
     >
-      {state.words.map((w) => (
-        <Word
-          key={w.key}
-          word={w}
-          cursorIndex={
-            w.idx === state.cursorPosition[0] ? state.cursorPosition[1] : null
-          }
+      <Box sx={{ filter: blur && 'blur(5px)' }}>
+        <Input
+          ref={inputRef}
+          type="text"
+          value={typedLetter}
+          onChange={handleInputChange}
+          onBlur={(_) => setBlur(true)}
+          onFocus={(_) => setBlur(false)}
+          autoFocus
+          sx={{
+            width: 10,
+            position: 'absolute',
+            opacity: 0,
+          }}
+          onKeyDown={handleKeyDown}
         />
-      ))}
+        {state.words.map((w) => (
+          <Word
+            blur={blur}
+            key={w.key}
+            word={w}
+            cursorIndex={
+              w.idx === state.cursorPosition[0] ? state.cursorPosition[1] : null
+            }
+          />
+        ))}
+      </Box>
+      {blur && (
+        <Flex
+          onClick={focusInput}
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            top: 0,
+            // bg: 'ActiveCaption',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+          }}
+        >
+          <span>Click to type</span>
+        </Flex>
+      )}
     </Box>
   )
 })

@@ -1,5 +1,6 @@
 import { Box, Flex, Heading } from 'theme-ui'
 import TypingArea from './components/TypingArea'
+import { WordsProvider } from './hooks/useWords'
 
 const App = () => {
   return (
@@ -33,7 +34,9 @@ const App = () => {
           whiteSpace: 'pre-wrap',
         }}
       >
-        <TypingArea />
+        <WordsProvider lang="en">
+          <TypingArea />
+        </WordsProvider>
       </Flex>
       <Box
         sx={{

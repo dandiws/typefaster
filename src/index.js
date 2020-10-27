@@ -4,6 +4,7 @@ import App from './App'
 import { ThemeProvider } from 'theme-ui'
 import theme from './theme'
 import { Global, css } from '@emotion/core'
+import { AppConfigProvider } from './hooks/useConfig'
 // import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
@@ -23,9 +24,11 @@ ReactDOM.render(
         }
       `}
     />
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <AppConfigProvider>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </AppConfigProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )
