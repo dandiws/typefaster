@@ -5,19 +5,20 @@ import { Flex } from 'theme-ui'
 import useTypingStore from '../store/typing'
 
 const ListItem = (props) => (
-  <div sx={{ fontSize: 2, color: 'secondaryText', mx: 3 }} {...props} />
+  <div sx={{ fontSize: 2, color: 'secondaryText', mx: 3, mb: 3 }} {...props} />
 )
 
 const Statistic = () => {
   const { typing } = useTypingStore()
   const { statistics } = typing
-  const { accuracy, wpm, correctWords, incorrectWords, time } = statistics
+  const { accuracy, wpm, correctWords, incorrectWords } = statistics
 
   return (
     <Flex
       sx={{
         width: '100%',
         justifyContent: 'center',
+        flexDirection: ['column', 'row'],
       }}
     >
       <ListItem>WPM : {wpm >= 0 ? wpm : '-'}</ListItem>

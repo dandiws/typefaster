@@ -34,6 +34,10 @@ const theme = {
       mt: 3,
     },
   },
+  sizes: {
+    container: [260, 640, 800],
+  },
+  breakpoints: ['576px', '768px', '992px', '1200px'],
 }
 
 export default theme

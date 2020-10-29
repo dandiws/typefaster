@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Select } from 'theme-ui'
+import { Box, Flex, Heading, Link, Select } from 'theme-ui'
 import TypingArea from './components/TypingArea'
 import useConfigStore from './store/config'
 import { TypingStoreProvider } from './store/typing'
@@ -33,9 +33,10 @@ const App = () => {
   return (
     <Flex
       sx={{
-        maxWidth: 800,
+        maxWidth: [500, 700, 900],
         mx: 'auto',
         py: 3,
+        px: [3, 4, 5],
         justifyContent: 'center',
         flexDirection: 'column',
         minHeight: '100vh',
@@ -73,12 +74,25 @@ const App = () => {
       <Flex
         sx={{
           py: 3,
-          justifyContent: 'space-between',
+          justifyContent: ['space-between'],
           color: 'GrayText',
+          flexDirection: ['column', 'column', 'row'],
         }}
       >
-        <span>&copy; 2020 / Dandi Wiratsangka</span>
-        <Flex>
+        <Box sx={{ mb: 3 }}>
+          &copy; 2020 / Dandi Wiratsangka /{' '}
+          <Link
+            sx={{
+              color: 'text',
+            }}
+            href="https://github.com/dandiws/typefaster"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Github
+          </Link>
+        </Box>
+        <Flex sx={{ mb: 3 }}>
           <Select
             onChange={handleSelectThemeChange}
             sx={{ py: 0, pr: 30, width: 'auto', ml: 3 }}
