@@ -4,7 +4,7 @@ import App from './App'
 import { ThemeProvider } from 'theme-ui'
 import theme from './theme'
 import { Global, css } from '@emotion/core'
-import { AppConfigProvider } from './hooks/useConfig'
+import { ConfigStoreProvider } from './store/config'
 // import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
@@ -24,11 +24,11 @@ ReactDOM.render(
         }
       `}
     />
-    <AppConfigProvider>
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <ConfigStoreProvider>
         <App />
-      </ThemeProvider>
-    </AppConfigProvider>
+      </ConfigStoreProvider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

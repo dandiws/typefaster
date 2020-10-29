@@ -1,11 +1,37 @@
-import { useContext, useEffect } from 'react'
-import { Box, Button, Divider, Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Heading, Select } from 'theme-ui'
 import TypingArea from './components/TypingArea'
-import { AppConfigContext } from './hooks/useConfig'
-import { WordsProvider } from './hooks/useWords'
+import useConfigStore from './store/config'
+import { TypingStoreProvider } from './store/typing'
+import { CHANGE_LANGUAGE } from './store/config/action'
+import { language, theme } from './utils/constant'
+import { useCallback, useEffect } from 'react'
+import Statistic from './components/Statistic'
 
 const App = () => {
-  const [config, dispatch] = useContext(AppConfigContext)
+  const { config, dispatch, setTheme } = useConfigStore()
+
+  const handleSelectThemeChange = useCallback(
+    (e) => {
+      const selectedValue = e.target.options[e.target.selectedIndex].value
+      setTheme(selectedValue)
+    },
+    [setTheme]
+  )
+
+  const handleSelectLanguageChange = useCallback(
+    (e) => {
+      const selectedValue = e.target.options[e.target.selectedIndex].value
+      dispatch({
+        type: CHANGE_LANGUAGE,
+        payload: { lang: selectedValue },
+      })
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    console.log(config.theme)
+  }, [config.theme])
 
   return (
     <Flex
@@ -22,47 +48,62 @@ const App = () => {
         sx={{
           py: 3,
           justifyContent: 'space-between',
-          alignItems:'center'
+          alignItems: 'center',
         }}
       >
         <Heading>Typefaster</Heading>
-        <Box>
-          <Button type="button" role="button" sx={{
-            bg: 'transparent',
-            py:0,
-            px:1,
-            color: config.lang==='id' ? '#2186fa' : 'gray'
-          }} onClick={e=>dispatch({type:'CHANGE_LANGUAGE', payload:{lang: 'id'}})}>id</Button>
-          <Box as="span" sx={{color:'gray',mx:2}}>/</Box>
-          <Button type="button" role="button" sx={{
-            bg: 'transparent',
-            py:0,
-            px:1,
-            color: config.lang==='en' ? '#2186fa' : 'gray'
-          }} onClick={e=>dispatch({type:'CHANGE_LANGUAGE', payload:{lang: 'en'}})}>en</Button>
-        </Box>
       </Flex>
       <Flex
         sx={{
           minHeight: 105,
           flexGrow: 1,
-          fontSize: 21,
           flexDirection: 'column',
           justifyContent: 'center',
         }}
       >
-        <WordsProvider lang={config.lang}>
+        <TypingStoreProvider lang={config.lang}>
           <TypingArea />
-        </WordsProvider>
+          <Box
+            sx={{
+              mt: 4,
+            }}
+          >
+            <Statistic />
+          </Box>
+        </TypingStoreProvider>
       </Flex>
       <Flex
         sx={{
           py: 3,
-          justifyContent:'center',
-          color:'GrayText'
+          justifyContent: 'space-between',
+          color: 'GrayText',
         }}
       >
-        &copy; 2020 / Dandi Wiratsangka
+        <span>&copy; 2020 / Dandi Wiratsangka</span>
+        <Flex>
+          <Select
+            onChange={handleSelectThemeChange}
+            sx={{ py: 0, pr: 30, width: 'auto', ml: 3 }}
+            value={config.theme}
+          >
+            {Object.entries(theme).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+          <Select
+            onChange={handleSelectLanguageChange}
+            value={config.lang}
+            sx={{ py: 0, pr: 30, width: 'auto', ml: 3 }}
+          >
+            {Object.entries(language).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
+          </Select>
+        </Flex>
       </Flex>
     </Flex>
   )

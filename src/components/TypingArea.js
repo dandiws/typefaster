@@ -1,71 +1,9 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Flex, Input } from 'theme-ui'
+import Word from './Word'
+import useTypingStore from '../store/typing'
+import actionType from '../store/typing/action'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { Box, Flex, Input, Text } from 'theme-ui'
-import { WordsContext } from '../hooks/useWords'
-
-const Word = memo(
-  ({ word, cursorIndex }) => {
-    return word.show && (
-      <Text
-        ref={word.elRef}
-        as="span"
-        sx={{
-          display: 'inline-block',
-        }}
-      >
-        {word.letters.map((l, i) => (
-          <Letter cursor={i === cursorIndex} key={i} letter={l} />
-        ))}
-        <Letter
-          cursor={cursorIndex >= word.originalWord.length}
-          letter={{
-            original: ' ',
-          }}
-        />
-      </Text>
-    )
-  },
-  (prevProps, nextProps) => prevProps.cursorIndex === nextProps.cursorIndex && prevProps.word.show === nextProps.word.show
-)
-
-const Letter = memo(
-  ({ letter, cursor }) => (
-    <Text
-      as="span"
-      sx={{
-        position: 'relative',
-        ':before': cursor && {
-          content: '"|"',
-          position: 'absolute',
-          right: '50%',
-          animation: 'opacityBreath  1s steps(1) infinite',
-        },
-        color:
-          letter.correctness === 'correct'
-            ? '#55ec47'
-            : letter.correctness === 'incorrect'
-            ? '#F07178'
-            : letter.correctness === 'extra'
-            ? '#daae5c'
-            : undefined,
-      }}
-    >
-      {letter.typed || letter.original}
-    </Text>
-  ),
-  (prevProps, nextProps) =>
-    prevProps.letter.typed === nextProps.letter.typed &&
-    prevProps.letter.correctness === nextProps.letter.correctness &&
-    prevProps.cursor === nextProps.cursor
-)
 
 const DISABLED_KEYS = [
   'arrowup',
@@ -80,47 +18,25 @@ const DISABLED_KEYS = [
 const DISABLED_CTRL = ['a', 'c', 'v']
 
 const TypingArea = memo(() => {
-  const [typedLetter, setTypedLetter] = useState('')
-  const { state, dispatch } = useContext(WordsContext)
+  const { typing, dispatch } = useTypingStore()
   const inputRef = useRef()
   const [blur, setBlur] = useState(false)
+  const startTime = useRef(null)
 
-  // useHotkeys('shift+enter', () => {
-  //   dispatch({ type: 'REFRESH_WORDS' })
-  // })
-
-  const documentKeyDownHandler = useCallback(
-    (e) => {
-
-      if (e.key === 'Enter' && e.shiftKey){
-        dispatch({ type: 'REFRESH_WORDS' })
-        setTypedLetter('')
-      }
-        
-      else if (e.key.toLowerCase()==='f' && e.altKey){
-        e.preventDefault()
-        focusInput()
-      }
-
-      return
-    },
-    [dispatch]
+  useHotkeys('shift+Enter', () =>
+    dispatch({ type: actionType.REFRESH_TYPING_STORE })
   )
 
-  useEffect(() => {
-    document.addEventListener('keydown', documentKeyDownHandler)
-    return () => document.removeEventListener('keydown', documentKeyDownHandler)
-  }, [documentKeyDownHandler])
+  useHotkeys('shift+f', () => focusInput(), {
+    keydown: false,
+    keyup: true,
+  })
 
-  useEffect(() => {
-    const isInputFocused =
-      inputRef.current && inputRef.current === document.activeElement
+  const focusInput = useCallback(() => {
+    return inputRef.current.focus()
+  }, [])
 
-    if (isInputFocused) setBlur(false)
-    else setBlur(true)
-  }, [inputRef])
-
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (DISABLED_KEYS.includes(e.key.toLowerCase())) {
       e.preventDefault()
       return
@@ -130,76 +46,92 @@ const TypingArea = memo(() => {
       e.preventDefault()
       return
     }
+  }, [])
 
-    // if (e.key === ' ') {
-    //   setTypedLetter('')
-    //   dispatch({ type: 'SPACE_KEY' })
-    // }
-  }
+  const handleInputChange = useCallback(
+    (e) => {
+      if (startTime.current === null) startTime.current = Date.now()
 
-  const focusInput = () => {
-    return inputRef.current.focus()
-  }
-
-  const handleInputChange = (e) => {
-    return setTypedLetter(e.target.value)
-  }
+      const value = e.target.value
+      if (value.endsWith(' ')) {
+        const typingMinutes = (Date.now() - startTime.current) / 60000
+        dispatch({
+          type: actionType.GOTO_NEXT_WORD,
+          payload: { typingMinutes },
+        })
+      } else {
+        dispatch({
+          type: actionType.UPDATE_WORD,
+          payload: { inputValue: value },
+        })
+      }
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
-    if (typedLetter.endsWith(' ')) {
-      setTypedLetter('')
-      dispatch({ type: 'SPACE_KEY' })
-      // setTimeout(() => , 0)
-      return
-    }
+    const isInputFocused =
+      inputRef.current && inputRef.current === document.activeElement
 
-    dispatch({ type: 'UPDATE_WORD', payload: { typed: typedLetter } })
-  }, [typedLetter, dispatch])
-
-  // useLayoutEffect(()=>{
-  //   console.log("HELO FROM ")
-  //   dispatch({type:'CALCULATE_LINE'})
-  // },[dispatch])
+    if (isInputFocused) setBlur(false)
+    else setBlur(true)
+  }, [inputRef])
 
   return (
     <Box
       sx={{
-        height: 70,
-        overflowY: 'hidden',
         position: 'relative',
-        px: 1,
-        fontFamily: 'monospace',
-        color: 'GrayText',
-        lineHeight: '35px',
-        whiteSpace: 'pre-wrap',
       }}
     >
-      <Box sx={{ filter: blur && 'blur(5px)' }}>
-        <Input
-          ref={inputRef}
-          type="text"
-          value={typedLetter}
-          onChange={handleInputChange}
-          onBlur={(_) => setBlur(true)}
-          onFocus={(_) => setBlur(false)}
-          autoFocus
+      <Box
+        sx={{
+          bg: 'typingBackground',
+          borderRadius: 5,
+          p: 3,
+          filter: blur && 'blur(5px)',
+        }}
+      >
+        <Box
           sx={{
-            width: 10,
-            position: 'absolute',
-            opacity: 0,
+            px: 1,
+            fontFamily: 'monospace',
+            fontSize: 21,
+            color: 'GrayText',
+            height: 70,
+            overflowY: 'hidden',
+            lineHeight: '35px',
+            whiteSpace: 'pre-wrap',
           }}
-          onKeyDown={handleKeyDown}
-        />
-        {state.words.map((w) => (
-          <Word
-            blur={blur}
-            key={w.key}
-            word={w}
-            cursorIndex={
-              w.idx === state.cursorPosition[0] ? state.cursorPosition[1] : null
-            }
+        >
+          <Input
+            ref={inputRef}
+            type="text"
+            value={typing.inputValue}
+            onChange={handleInputChange}
+            onBlur={() => {
+              focusInput()
+              // setBlur(true)
+            }}
+            onFocus={() => setBlur(false)}
+            autoFocus
+            sx={{
+              width: 10,
+              position: 'absolute',
+              opacity: 0,
+            }}
+            onKeyDown={handleKeyDown}
           />
-        ))}
+          {typing.wordSequence.map((w, i) => (
+            <Word
+              blur={blur}
+              key={w.key}
+              word={w}
+              cursorIndex={
+                i === typing.caretPosition[0] ? typing.caretPosition[1] : null
+              }
+            />
+          ))}
+        </Box>
       </Box>
       {blur && (
         <Flex
@@ -210,14 +142,15 @@ const TypingArea = memo(() => {
             height: '100%',
             left: 0,
             top: 0,
-            // bg: 'ActiveCaption',
             justifyContent: 'center',
             alignItems: 'center',
-            color: 'white',
-            cursor: 'pointer'
+            color: 'goldenrod',
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontSize: 17,
           }}
         >
-          Click or Press Alt+F to focus
+          Click or Press Shift+F to focus
         </Flex>
       )}
     </Box>
