@@ -54,10 +54,10 @@ const TypingArea = memo(() => {
 
       const value = e.target.value
       if (value.endsWith(' ')) {
-        const typingMinutes = (Date.now() - startTime.current) / 60000
+        const seconds = (Date.now() - startTime.current) / 1000
         dispatch({
           type: actionType.GOTO_NEXT_WORD,
-          payload: { typingMinutes },
+          payload: { typingMinutes: seconds },
         })
       } else {
         dispatch({

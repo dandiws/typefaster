@@ -7,8 +7,8 @@ Letter is an object that represent an character.
 ```js
 {
   original: string,
-  typed: undefined | string,
-  correctness: undefined | 'correct' | 'incorrect' | 'extra',
+  typed: null | string,
+  status: 'untyped' | 'correct' | 'incorrect' | 'extra',
 }
 ```
 
@@ -22,10 +22,11 @@ Word is an object that represent sequence of letters.
 
 ```js
 {
+  isTyped: boolean,
   show: boolean,
   elRef: RefObject,
   originalWord: string,
-  letterSequence: Array<Letter>
+  letterSequence: Array<Letter>,
 }
 ```
 
@@ -46,6 +47,21 @@ TypingStore is an object that represent state of user's typing in typing area.
     words: Array<string>
   },
   wordSequence: WordSequence,
-  caretPosition: [number, number]
+  caretPosition: [number, number],
+  statistics: Object
+}
+```
+
+## Statistics
+
+Statistics is result of a test in range of time.
+
+```js
+{
+  wpm: number,
+  accuracy: number,
+  correctWords: number,
+  incorrectWords: number,
+  time: number //in seconds
 }
 ```

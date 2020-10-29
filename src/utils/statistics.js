@@ -10,7 +10,7 @@ export function getIncorrectWordSequence(wordSequence) {
   return typedWordSeq.filter((word) => !isCorrectlyTyped(word))
 }
 
-export function calculateWPM(wordSequence, typingMinutes) {
+export function calculateWPM(wordSequence, seconds) {
   const typedWordSeq = wordSequence.filter((word) => word.isTyped)
   const spacesCount = typedWordSeq.length - 1
   const correctlyTypedLetters = getCorrectWordSequence(wordSequence)
@@ -18,7 +18,7 @@ export function calculateWPM(wordSequence, typingMinutes) {
     .join('')
 
   return Math.round(
-    (spacesCount + correctlyTypedLetters.length) / 5 / typingMinutes
+    (spacesCount + correctlyTypedLetters.length) / 5 / (seconds / 60)
   )
 }
 
@@ -44,11 +44,12 @@ export function calculateAccuracy(wordSequence) {
   return Math.round((correctKeys / totalKeys) * 100) / 100
 }
 
-export function getStatistics(wordSequence, typingMinutes) {
+export function getStatistics(wordSequence, seconds) {
   return {
-    wpm: calculateWPM(wordSequence, typingMinutes),
+    wpm: calculateWPM(wordSequence, seconds),
     accuracy: calculateAccuracy(wordSequence),
     correctWords: getCorrectWordSequence(wordSequence).length,
     incorrectWords: getIncorrectWordSequence(wordSequence).length,
+    time: seconds,
   }
 }

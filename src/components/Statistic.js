@@ -11,7 +11,7 @@ const ListItem = (props) => (
 const Statistic = () => {
   const { typing } = useTypingStore()
   const { statistics } = typing
-  const { accuracy, wpm, correctWords, incorrectWords } = statistics
+  const { accuracy, wpm, correctWords, incorrectWords, time } = statistics
 
   return (
     <Flex
@@ -28,6 +28,7 @@ const Statistic = () => {
       <ListItem>
         Incorrect words: {incorrectWords >= 0 ? incorrectWords : '-'}
       </ListItem>
+      <ListItem>Time: {time >= 0 ? time : '-'}</ListItem>
     </Flex>
   )
 }
