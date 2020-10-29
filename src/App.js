@@ -4,7 +4,7 @@ import useConfigStore from './store/config'
 import { TypingStoreProvider } from './store/typing'
 import { CHANGE_LANGUAGE } from './store/config/action'
 import { language, theme } from './utils/constant'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import Statistic from './components/Statistic'
 import Timer from './components/Timer'
 
@@ -36,7 +36,7 @@ const App = () => {
         maxWidth: [500, 700, 900],
         mx: 'auto',
         py: 3,
-        px: [3, 4, 5],
+        px: [4, 5],
         justifyContent: 'center',
         flexDirection: 'column',
         minHeight: '100vh',
@@ -74,7 +74,8 @@ const App = () => {
       <Flex
         sx={{
           py: 3,
-          justifyContent: ['space-between'],
+          justifyContent: ['center', 'center', 'space-between'],
+          alignItems: 'center',
           color: 'GrayText',
           flexDirection: ['column', 'column', 'row'],
         }}
