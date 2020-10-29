@@ -4,6 +4,9 @@ export function createTypingStore({
   wordSequence = [],
   caretPosition = [0, 0],
   statistics = {},
+  typingStatus = 'pending',
+  startTime = null,
+  finishTime = null,
 }) {
   return {
     inputValue,
@@ -11,13 +14,16 @@ export function createTypingStore({
     wordSequence,
     caretPosition,
     statistics,
+    typingStatus,
+    startTime,
+    finishTime,
   }
 }
 
 export function createConfigStore({
   lang = 'id',
   mode = 'time',
-  duration = 30,
+  duration = 60,
 }) {
   return {
     lang,

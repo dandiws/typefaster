@@ -6,6 +6,7 @@ import { CHANGE_LANGUAGE } from './store/config/action'
 import { language, theme } from './utils/constant'
 import { useCallback, useEffect } from 'react'
 import Statistic from './components/Statistic'
+import Timer from './components/Timer'
 
 const App = () => {
   const { config, dispatch, setTheme } = useConfigStore()
@@ -28,10 +29,6 @@ const App = () => {
     },
     [dispatch]
   )
-
-  useEffect(() => {
-    console.log(config.theme)
-  }, [config.theme])
 
   return (
     <Flex
@@ -62,6 +59,7 @@ const App = () => {
         }}
       >
         <TypingStoreProvider lang={config.lang}>
+          <Timer duration={config.duration} />
           <TypingArea />
           <Box
             sx={{

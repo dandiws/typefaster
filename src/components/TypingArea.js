@@ -4,6 +4,7 @@ import Word from './Word'
 import useTypingStore from '../store/typing'
 import actionType from '../store/typing/action'
 import { useHotkeys } from 'react-hotkeys-hook'
+import Hotkey from './Hotkey'
 
 const DISABLED_KEYS = [
   'arrowup',
@@ -21,11 +22,10 @@ const TypingArea = memo(() => {
   const { typing, dispatch } = useTypingStore()
   const inputRef = useRef()
   const [blur, setBlur] = useState(false)
-  const startTime = useRef(null)
 
-  useHotkeys('shift+Enter', () =>
+  useHotkeys('shift+Enter', () => {
     dispatch({ type: actionType.REFRESH_TYPING_STORE })
-  )
+  })
 
   useHotkeys('shift+f', () => focusInput(), {
     keydown: false,
@@ -33,6 +33,7 @@ const TypingArea = memo(() => {
   })
 
   const focusInput = useCallback(() => {
+    console.log('focus')
     return inputRef.current.focus()
   }, [])
 
@@ -48,13 +49,25 @@ const TypingArea = memo(() => {
     }
   }, [])
 
+  const handleOverlayClick = useCallback(
+    (e) => {
+      if (typing.typingStatus === 'done')
+        dispatch({ type: actionType.REFRESH_TYPING_STORE })
+
+      focusInput()
+    },
+    [dispatch, typing.typingStatus, focusInput]
+  )
+
   const handleInputChange = useCallback(
     (e) => {
-      if (startTime.current === null) startTime.current = Date.now()
+      if (typing.typingStatus === 'pending') {
+        dispatch({ type: actionType.START_TYPING })
+      }
 
       const value = e.target.value
       if (value.endsWith(' ')) {
-        const seconds = (Date.now() - startTime.current) / 1000
+        const seconds = (Date.now() - typing.startTime) / 1000
         dispatch({
           type: actionType.GOTO_NEXT_WORD,
           payload: { typingMinutes: seconds },
@@ -66,7 +79,7 @@ const TypingArea = memo(() => {
         })
       }
     },
-    [dispatch]
+    [dispatch, typing.typingStatus, typing.startTime]
   )
 
   useEffect(() => {
@@ -76,6 +89,15 @@ const TypingArea = memo(() => {
     if (isInputFocused) setBlur(false)
     else setBlur(true)
   }, [inputRef])
+
+  useEffect(() => {
+    if (typing.typingStatus === 'done') {
+      setBlur(true)
+    }
+    if (typing.typingStatus === 'pending') {
+      focusInput()
+    }
+  }, [typing.typingStatus, focusInput])
 
   return (
     <Box
@@ -89,6 +111,7 @@ const TypingArea = memo(() => {
           borderRadius: 5,
           p: 3,
           filter: blur && 'blur(5px)',
+          opacity: blur && 0.25,
         }}
       >
         <Box
@@ -109,8 +132,8 @@ const TypingArea = memo(() => {
             value={typing.inputValue}
             onChange={handleInputChange}
             onBlur={() => {
-              focusInput()
-              // setBlur(true)
+              // focusInput()
+              setBlur(true)
             }}
             onFocus={() => setBlur(false)}
             autoFocus
@@ -120,6 +143,7 @@ const TypingArea = memo(() => {
               opacity: 0,
             }}
             onKeyDown={handleKeyDown}
+            disabled={typing.typingStatus === 'done'}
           />
           {typing.wordSequence.map((w, i) => (
             <Word
@@ -135,7 +159,7 @@ const TypingArea = memo(() => {
       </Box>
       {blur && (
         <Flex
-          onClick={focusInput}
+          onClick={handleOverlayClick}
           sx={{
             position: 'absolute',
             width: '100%',
@@ -144,13 +168,24 @@ const TypingArea = memo(() => {
             top: 0,
             justifyContent: 'center',
             alignItems: 'center',
-            color: 'goldenrod',
-            fontWeight: 600,
+            color: 'text',
+            fontWeight: 500,
             cursor: 'pointer',
-            fontSize: 17,
+            fontSize: 20,
+            flexDirection: 'column',
           }}
         >
-          Click or Press Shift+F to focus
+          {typing.typingStatus === 'done' ? (
+            <>
+              <div>
+                Click or <Hotkey>Shift+Enter</Hotkey> to start new test
+              </div>
+            </>
+          ) : (
+            <span>
+              Click or <Hotkey>Shift+F</Hotkey> to focus
+            </span>
+          )}
         </Flex>
       )}
     </Box>

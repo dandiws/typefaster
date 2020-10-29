@@ -28,7 +28,7 @@ const Statistic = () => {
       <ListItem>
         Incorrect words: {incorrectWords >= 0 ? incorrectWords : '-'}
       </ListItem>
-      <ListItem>Time: {time >= 0 ? time : '-'}</ListItem>
+      {/* <ListItem>Time: {time >= 0 ? time : '-'}</ListItem> */}
     </Flex>
   )
 }

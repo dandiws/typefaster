@@ -15,7 +15,7 @@ const light = createColorTheme({
 const oneDarkPro = createColorTheme({
   background: '#21252B',
   typingBackground: '#282C34',
-  text: 'gray',
+  text: '#999999',
   untypedLetter: '#C678DD',
   incorrectLetter: '#E5C07B',
   correctLetter: '#69B679',
@@ -25,7 +25,7 @@ const oneDarkPro = createColorTheme({
 
 const monokai = createColorTheme({
   background: '#1E1F1C',
-  text: '#fff',
+  text: '#B67534',
   typingBackground: '#272822',
   correctLetter: '#fff',
   incorrectLetter: '#D72F37',

@@ -2,6 +2,7 @@ import actionType from './action'
 import { createWordSequence } from '../../utils/Word'
 import Letter from '../../utils/Letter'
 import { getStatistics } from '../../utils/statistics'
+import { createTypingStore } from '../../utils/store'
 
 function replaceItemInArray(originalArr, index, newItem) {
   return originalArr.map((item, i) => (i === index ? newItem : item))
@@ -26,20 +27,32 @@ function typingReducer(state, { type, payload }) {
   const activeWord = state.wordSequence[wordIndex]
   const N_WORD_TOBE_GENERATED = 20 //initial word count
   const APPEND_WORD_TRESHOLD = 20 //minimal word has not been typed which new words will be generated (appended)
-  console.log(type)
 
   switch (type) {
     case actionType.INITIALIZE_TYPING_STORE: {
-      return {
-        ...state,
+      return createTypingStore({
         languageJSON: payload.languageJSON,
         wordSequence: createWordSequence(
           payload.languageJSON.words,
           N_WORD_TOBE_GENERATED
         ),
-        caretPosition: [0, 0],
-      }
+      })
     }
+
+    case actionType.START_TYPING:
+      return {
+        ...state,
+        typingStatus: 'started',
+        startTime: Date.now(),
+        inputValue: '',
+      }
+
+    case actionType.DONE_TYPING:
+      return {
+        ...state,
+        typingStatus: 'done',
+        finishTime: Date.now(),
+      }
 
     case actionType.UPDATE_WORD: {
       if (state.wordSequence.length <= 0) return state
@@ -124,15 +137,13 @@ function typingReducer(state, { type, payload }) {
     }
 
     case actionType.REFRESH_TYPING_STORE: {
-      return {
-        ...state,
+      return createTypingStore({
+        languageJSON: state.languageJSON,
         wordSequence: createWordSequence(
           state.languageJSON.words,
           N_WORD_TOBE_GENERATED
         ),
-        caretPosition: [0, 0],
-        inputValue: '',
-      }
+      })
     }
 
     default:
