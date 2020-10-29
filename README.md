@@ -1,5 +1,7 @@
 # Typefaster
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/dandiws/typefaster/blob/main/LICENSE)
+
 Typefaster is a clean and minimal typing test insipired by [Monkeytype](https://monkeytype.com).
 
 # Features
