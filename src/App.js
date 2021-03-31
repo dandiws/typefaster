@@ -1,12 +1,12 @@
 import { Box, Flex, Heading, Link, Select } from 'theme-ui'
-import TypingArea from './components/TypingArea'
+import TypingArea from 'components/TypingArea'
 import useConfigStore from './store/config'
 import { TypingStoreProvider } from './store/typing'
 import { CHANGE_LANGUAGE } from './store/config/action'
 import { language, theme } from './utils/constant'
 import { useCallback } from 'react'
-import Statistic from './components/Statistic'
-import Timer from './components/Timer'
+import Statistic from 'components/Statistic'
+import Timer from 'components/Timer'
 
 const App = () => {
   const { config, dispatch, setTheme } = useConfigStore()

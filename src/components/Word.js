@@ -9,12 +9,14 @@ const Word = memo(
       word.show && (
         <Text ref={word.elRef} as="span">
           <Text
+            data-testid="word"
             as="span"
             sx={(theme) => ({
               display: 'inline-block',
+              textDecorationColor: theme.colors.incorrectLetter,
               textDecoration:
                 word.isTyped && !isCorrectlyTyped(word)
-                  ? `line-through ${theme.colors.incorrectLetter}`
+                  ? 'line-through'
                   : 'none',
             })}
           >

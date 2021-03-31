@@ -4,6 +4,7 @@ import { Text } from 'theme-ui'
 const Letter = memo(
   ({ letter, cursor }) => (
     <Text
+      data-testid="letter"
       as="span"
       sx={{
         position: 'relative',

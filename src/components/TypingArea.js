@@ -32,8 +32,7 @@ const TypingArea = memo(() => {
     keyup: true,
   })
 
-  const focusInput = useCallback(() => {
-    console.log('focus')
+  const focusInput = useCallback(() => {    
     return inputRef.current.focus()
   }, [])
 
@@ -121,7 +120,7 @@ const TypingArea = memo(() => {
             fontSize: 21,
             color: 'GrayText',
             height: 70,
-            overflowY: 'hidden',
+            overflow: 'hidden',
             lineHeight: '35px',
             whiteSpace: 'pre-wrap',
           }}
