@@ -1,4 +1,4 @@
-export function getStatus({ original, typed }) {
+export function getStatus({ original, typed } = {}) {
   if (original && !typed) return 'untyped'
   if (original && typed) return typed === original ? 'correct' : 'incorrect'
   if (!original && typed) return 'extra'
