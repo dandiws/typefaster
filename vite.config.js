@@ -8,5 +8,10 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     plugins: [jsconfigPaths(), react()],
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './src/setupTests.js',
+    },
   };
 });
