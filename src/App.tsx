@@ -3,8 +3,8 @@ import TypingArea from 'components/TypingArea'
 import useConfigStore from './store/config'
 import { TypingStoreProvider } from './store/typing'
 import { CHANGE_LANGUAGE } from './store/config/action'
-import { language, theme } from './utils/constant'
-import { useCallback } from 'react'
+import { Language, language, Theme, theme } from './utils/constant'
+import React, { useCallback } from 'react'
 import Statistic from 'components/Statistic'
 import Timer from 'components/Timer'
 
@@ -12,16 +12,16 @@ const App = () => {
   const { config, dispatch, setTheme } = useConfigStore()
 
   const handleSelectThemeChange = useCallback(
-    (e) => {
-      const selectedValue = e.target.options[e.target.selectedIndex].value
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = e.target.options[e.target.selectedIndex].value as Theme
       setTheme(selectedValue)
     },
     [setTheme]
   )
 
   const handleSelectLanguageChange = useCallback(
-    (e) => {
-      const selectedValue = e.target.options[e.target.selectedIndex].value
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = e.target.options[e.target.selectedIndex].value as Language
       dispatch({
         type: CHANGE_LANGUAGE,
         payload: { lang: selectedValue },

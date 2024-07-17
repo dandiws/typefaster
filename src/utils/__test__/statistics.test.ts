@@ -20,7 +20,6 @@ describe('getCorrectWordSequence function', () => {
     ]
 
     expect(Array.isArray(getCorrectWordSequence(wordSequence))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence(null))).toEqual(true)
     expect(Array.isArray(getCorrectWordSequence([]))).toEqual(true)
   })
 
@@ -66,7 +65,6 @@ describe('getIncorrectWordSequence function', () => {
     ]
 
     expect(Array.isArray(getIncorrectWordSequence(wordSequence))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence(null))).toEqual(true)
     expect(Array.isArray(getIncorrectWordSequence([]))).toEqual(true)
   })
 
@@ -107,8 +105,8 @@ describe('getIncorrectWordSequence function', () => {
 
 describe('calculateWPM function', () => {
   test('should always return a number', () => {
-    expect(calculateWPM(undefined, 10)).toBeNaN()
-    expect(calculateWPM(null, -1)).toBeNaN()
+    expect(calculateWPM([], 0)).toBeNaN()
+    expect(calculateWPM([], -1)).toBeNaN()
     expect(calculateWPM([], 10)).toEqual(0)
 
     const wordSequence = [
@@ -128,8 +126,6 @@ describe('calculateWPM function', () => {
     wordSequence[0].letterSequence = wordSequence[0].letterSequence.map(
       letter => new Letter(letter.original, letter.original)
     )
-
-    wordSequence[0] = null
 
     expect(calculateWPM(wordSequence, 60)).toBeGreaterThan(0)
   })
@@ -154,8 +150,6 @@ describe('calculateAccuary function', () => {
     wordSequence[0].letterSequence = wordSequence[0].letterSequence.map(
       letter => new Letter(letter.original, letter.original)
     )
-
-    wordSequence[0] = null
 
     expect(calculateAccuracy(wordSequence)).toBeGreaterThan(0)
   })

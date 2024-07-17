@@ -3,7 +3,7 @@ import { Flex } from 'theme-ui'
 import actionType from '../store/typing/action'
 import useTypingStore from '../store/typing'
 
-const Timer = ({ duration }) => {
+const Timer = ({ duration }: React.PropsWithChildren<{ duration: number}>) => {
   const { typing, dispatch } = useTypingStore()
   const [timerCount, setTimerCount] = useState(duration)
   const timerRef = useRef<NodeJS.Timeout>()

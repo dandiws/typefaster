@@ -1,28 +1,29 @@
-import actionType from './action'
-import { createWordSequence } from '../../utils/Word'
+import actionType, { Action } from './action'
+import Word, { createWordSequence } from '../../utils/Word'
 import Letter from '../../utils/Letter'
 import { getStatistics } from '../../utils/statistics'
-import { createTypingStore } from '../../utils/store'
+import { createTypingStore, Typing } from '../../utils/store'
+import { Reducer } from 'react'
 
-function replaceItemInArray(originalArr, index, newItem) {
+function replaceItemInArray<T>(originalArr: Array<T>, index: number, newItem: T) {
   return originalArr.map((item, i) => (i === index ? newItem : item))
 }
 
-function hideWord(word) {
+function hideWord(word: Word) {
   return {
     ...word,
     show: false,
   }
 }
 
-function markAsTyped(word) {
+function markAsTyped(word: Word) {
   return {
     ...word,
     isTyped: true,
   }
 }
 
-function typingReducer(state, { type, payload }) {
+const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
   const [wordIndex, letterIndex] = state.caretPosition
   const activeWord = state.wordSequence[wordIndex]
   const N_WORD_TOBE_GENERATED = 20 //initial word count
@@ -31,9 +32,9 @@ function typingReducer(state, { type, payload }) {
   switch (type) {
     case actionType.INITIALIZE_TYPING_STORE: {
       return createTypingStore({
-        languageJSON: payload.languageJSON,
+        languageJSON: payload?.languageJSON,
         wordSequence: createWordSequence(
-          payload.languageJSON.words,
+          payload?.languageJSON?.words || [],
           N_WORD_TOBE_GENERATED
         ),
       })
@@ -57,7 +58,7 @@ function typingReducer(state, { type, payload }) {
     case actionType.UPDATE_WORD: {
       if (state.wordSequence.length <= 0) return state
 
-      const inputValueArr = payload.inputValue.split('')
+      const inputValueArr = payload?.inputValue?.split('') || []
       const originalLetterSeq = activeWord.letterSequence.filter(
         (l) => l.original
       )
@@ -86,7 +87,7 @@ function typingReducer(state, { type, payload }) {
           updatedActiveWord
         ),
         caretPosition: [wordIndex, inputValueArr.length],
-        inputValue: payload.inputValue,
+        inputValue: payload?.inputValue || '',
       }
     }
 
@@ -118,7 +119,7 @@ function typingReducer(state, { type, payload }) {
           const remaining_word_count = state.wordSequence.length - wordIndex + 1
           if (remaining_word_count < APPEND_WORD_TRESHOLD) {
             const newlyGeneratedWordSeq = createWordSequence(
-              state.languageJSON.words,
+              state.languageJSON?.words || [],
               N_WORD_TOBE_GENERATED
             )
             updatedWordSeq = [...updatedWordSeq, ...newlyGeneratedWordSeq]
@@ -132,7 +133,7 @@ function typingReducer(state, { type, payload }) {
         wordSequence: updatedWordSeq,
         caretPosition: [wordIndex + 1, 0],
         inputValue: '',
-        statistics: getStatistics(updatedWordSeq, payload.typingMinutes),
+        statistics: getStatistics(updatedWordSeq, payload?.typingMinutes || -1),
       }
     }
 
@@ -140,7 +141,7 @@ function typingReducer(state, { type, payload }) {
       return createTypingStore({
         languageJSON: state.languageJSON,
         wordSequence: createWordSequence(
-          state.languageJSON.words,
+          state.languageJSON?.words || [],
           N_WORD_TOBE_GENERATED
         ),
       })

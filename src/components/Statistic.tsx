@@ -4,7 +4,7 @@ import { jsx } from 'theme-ui'
 import { Flex } from 'theme-ui'
 import useTypingStore from '../store/typing'
 
-const ListItem = (props) => (
+const ListItem = (props: React.PropsWithChildren) => (
   <div sx={{ fontSize: 2, color: 'secondaryText', mx: 3, mb: 3 }} {...props} />
 )
 

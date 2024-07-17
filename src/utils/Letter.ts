@@ -1,4 +1,4 @@
-export function getStatus({ original, typed }: { original?: string; typed?: string | null }) {
+export function getStatus({ original, typed }: { original?: string | null; typed?: string | null }) {
   if (original && !typed) return 'untyped'
   if (original && typed) return typed === original ? 'correct' : 'incorrect'
   if (!original && typed) return 'extra'
@@ -6,11 +6,11 @@ export function getStatus({ original, typed }: { original?: string; typed?: stri
 }
 
 class Letter {
-  original: string;
+  original: string | null;
   typed: string | null;
-  status: string;
+  status: string | null;
 
-  constructor(original: string, typed: string | null = null) {
+  constructor(original: string | null, typed: string | null = null) {
     this.original = original;
     this.typed = typed;
     this.status = getStatus({ original, typed });

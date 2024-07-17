@@ -26,7 +26,7 @@ export function isCorrectlyTyped(word: Word) {
     .every((status) => status === 'correct')
 }
 
-export function createWordSequence(arrOfString: string[], n = undefined) {
+export function createWordSequence(arrOfString: string[], n?: number) {
   if (n) arrOfString = sampleSize(arrOfString, n)
 
   return arrOfString.map((s, i) => new Word(s))

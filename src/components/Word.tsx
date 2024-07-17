@@ -5,7 +5,7 @@ import LetterComponent from './Letter'
 import Letter from 'utils/Letter'
 
 const WordComponent = memo(
-  ({ word, cursorIndex }: { word: Word, cursorIndex?: number }) => {
+  ({ word, cursorIndex }: { word: Word, cursorIndex?: number | null }) => {
     return (
       word.show && (
         <Text ref={word.elRef} as="span">
@@ -26,7 +26,7 @@ const WordComponent = memo(
             ))}
           </Text>
           <LetterComponent
-            cursor={cursorIndex >= word.originalWord.length}
+            cursor={!!cursorIndex && (cursorIndex >= word.originalWord.length)}
             letter={new Letter(' ')}
           />
         </Text>

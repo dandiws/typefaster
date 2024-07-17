@@ -1,6 +1,6 @@
 import { Box } from 'theme-ui'
 
-const Hotkey = ({ children }) => {
+const Hotkey = ({ children }: React.PropsWithChildren) => {
   return (
     <Box
       as="span"

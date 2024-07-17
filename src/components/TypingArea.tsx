@@ -20,7 +20,7 @@ const DISABLED_CTRL = ['a', 'c', 'v']
 
 const TypingArea = memo(() => {
   const { typing, dispatch } = useTypingStore()
-  const inputRef = useRef<HTMLInputElement>()
+  const inputRef = useRef<HTMLInputElement>(null)
   const [blur, setBlur] = useState(false)
 
   useHotkeys('shift+Enter', () => {
@@ -39,7 +39,7 @@ const TypingArea = memo(() => {
     return inputRef.current.focus()
   }, [])
 
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (DISABLED_KEYS.includes(e.key.toLowerCase())) {
       e.preventDefault()
       return
@@ -52,7 +52,7 @@ const TypingArea = memo(() => {
   }, [])
 
   const handleOverlayClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLDivElement>) => {
       if (typing.typingStatus === 'done')
         dispatch({ type: actionType.REFRESH_TYPING_STORE })
 
@@ -62,14 +62,14 @@ const TypingArea = memo(() => {
   )
 
   const handleInputChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       if (typing.typingStatus === 'pending') {
         dispatch({ type: actionType.START_TYPING })
       }
 
       const value = e.target.value
       if (value.endsWith(' ')) {
-        const seconds = (Date.now() - typing.startTime) / 1000
+        const seconds = (Date.now() - (typing.startTime ?? 0)) / 1000
         dispatch({
           type: actionType.GOTO_NEXT_WORD,
           payload: { typingMinutes: seconds },
@@ -114,7 +114,7 @@ const TypingArea = memo(() => {
           p: 3,
           filter: blur && 'blur(5px)',
           opacity: blur && 0.25,
-        }}
+        } as any}
       >
         <Box
           sx={{

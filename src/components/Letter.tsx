@@ -8,7 +8,9 @@ const LetterComponent = memo(
       data-testid="letter"
       as="span"
       sx={{
+        // @ts-ignore
         position: 'relative',
+        // @ts-ignore
         ':before': cursor && {
           content: '"|"',
           color: 'caret',
@@ -16,6 +18,7 @@ const LetterComponent = memo(
           right: '50%',
           animation: 'opacityBreath  1s steps(1) infinite',
         },
+        // @ts-ignore
         color: letter.status && `${letter.status}Letter`,
       }}
     >

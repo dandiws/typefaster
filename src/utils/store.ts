@@ -8,9 +8,15 @@ export interface Config {
   theme: Theme;
 }
 
+interface LanguageJSON {
+  lang: string;
+  name: string;
+  words: string[]
+}
+
 export interface Typing {
   inputValue: string;
-  languageJSON: Record<string, unknown>;
+  languageJSON: LanguageJSON | null;
   wordSequence: Array<Word>;
   caretPosition: [number, number];
   statistics: {
@@ -21,8 +27,8 @@ export interface Typing {
   };
   typingStatus: 'pending' | 'done' | 'started';
   typingMinutes?: number;
-  startTime: number;
-  finishTime: number;
+  startTime: number | null;
+  finishTime: number | null;
 }
 
 export function createTypingStore({
