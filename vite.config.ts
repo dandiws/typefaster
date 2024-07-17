@@ -1,17 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import jsconfigPaths from 'vite-jsconfig-paths'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(() => {
   return {
     build: {
       outDir: 'build',
     },
-    plugins: [jsconfigPaths(), react()],
+    plugins: [tsconfigPaths(), react()],
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: './src/setupTests.js',
+      setupFiles: './src/setupTests.ts',
     },
   };
 });

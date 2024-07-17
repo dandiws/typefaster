@@ -8,6 +8,8 @@ const actionType = {
   CHANGE_MODE,
   CHANGE_DURATION,
   CHANGE_THEME,
-}
+} as const
+
+export type ActionType = keyof typeof actionType;
 
 export default actionType

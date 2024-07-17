@@ -6,7 +6,7 @@ import useTypingStore from '../store/typing'
 const Timer = ({ duration }) => {
   const { typing, dispatch } = useTypingStore()
   const [timerCount, setTimerCount] = useState(duration)
-  const timerRef = useRef()
+  const timerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     if (typing.typingStatus === 'pending') {

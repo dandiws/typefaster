@@ -12,6 +12,8 @@ const action = {
   REFRESH_TYPING_STORE,
   START_TYPING,
   DONE_TYPING,
-}
+} as const;
+
+export type ActionType = keyof typeof action;
 
 export default action

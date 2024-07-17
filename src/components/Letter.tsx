@@ -1,8 +1,9 @@
 import { memo } from 'react'
 import { Text } from 'theme-ui'
+import Letter from 'utils/Letter'
 
-const Letter = memo(
-  ({ letter, cursor }) => (
+const LetterComponent = memo(
+  ({ letter, cursor }: { letter: Letter, cursor?: boolean }) => (
     <Text
       data-testid="letter"
       as="span"
@@ -26,4 +27,4 @@ const Letter = memo(
     prevProps.cursor === nextProps.cursor
 )
 
-export default Letter
+export default LetterComponent

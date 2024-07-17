@@ -1,3 +1,4 @@
+import { describe, expect } from 'vitest';
 import Letter from 'utils/Letter'
 import Word, { isCorrectlyTyped, createWordSequence } from 'utils/Word'
 
@@ -24,14 +25,14 @@ describe('isCorrectlyTyped function', () => {
 describe('createWordSequence function', () => {
   test('should return correct length', () => {
     const wordArr = `
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
       Possimus magnam iste ratione ipsam laborum consequatur, doloribus
-      labore maiores aperiam impedit. 
-      Blanditiis, minus tenetur repellat 
-      accusantium provident incidunt 
+      labore maiores aperiam impedit.
+      Blanditiis, minus tenetur repellat
+      accusantium provident incidunt
       reiciendis assumenda illo?
       `.split(/[^a-zA-Z]+/)
-    
+
     expect(createWordSequence(wordArr,10).length).toEqual(10)
     expect(createWordSequence(wordArr).length).toEqual(wordArr.length)
   })

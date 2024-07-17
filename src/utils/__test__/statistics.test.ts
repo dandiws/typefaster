@@ -1,3 +1,4 @@
+import { describe, expect } from 'vitest';
 import Letter from 'utils/Letter'
 import {
   getCorrectWordSequence,
@@ -19,21 +20,8 @@ describe('getCorrectWordSequence function', () => {
     ]
 
     expect(Array.isArray(getCorrectWordSequence(wordSequence))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence())).toEqual(true)
     expect(Array.isArray(getCorrectWordSequence(null))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence('string'))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence(1033))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence(NaN))).toEqual(true)
     expect(Array.isArray(getCorrectWordSequence([]))).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence({}))).toEqual(true)
-    expect(
-      Array.isArray(
-        getCorrectWordSequence({
-          property: 'value'
-        })
-      )
-    ).toEqual(true)
-    expect(Array.isArray(getCorrectWordSequence([[[]]]))).toEqual(true)
   })
 
   test('should return correct output and length', () => {
@@ -78,21 +66,8 @@ describe('getIncorrectWordSequence function', () => {
     ]
 
     expect(Array.isArray(getIncorrectWordSequence(wordSequence))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence())).toEqual(true)
     expect(Array.isArray(getIncorrectWordSequence(null))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence('string'))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence(1033))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence(NaN))).toEqual(true)
     expect(Array.isArray(getIncorrectWordSequence([]))).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence({}))).toEqual(true)
-    expect(
-      Array.isArray(
-        getIncorrectWordSequence({
-          property: 'value'
-        })
-      )
-    ).toEqual(true)
-    expect(Array.isArray(getIncorrectWordSequence([[[]]]))).toEqual(true)
   })
 
   test('getIncorrectWordSequence', () => {
@@ -132,7 +107,6 @@ describe('getIncorrectWordSequence function', () => {
 
 describe('calculateWPM function', () => {
   test('should always return a number', () => {
-    expect(calculateWPM()).toBeNaN()
     expect(calculateWPM(undefined, 10)).toBeNaN()
     expect(calculateWPM(null, -1)).toBeNaN()
     expect(calculateWPM([], 10)).toEqual(0)
@@ -151,7 +125,7 @@ describe('calculateWPM function', () => {
 
     expect(calculateWPM(wordSequence, 60)).toBeGreaterThan(0)
 
-    wordSequence.letterSequence = wordSequence[0].letterSequence.map(
+    wordSequence[0].letterSequence = wordSequence[0].letterSequence.map(
       letter => new Letter(letter.original, letter.original)
     )
 
@@ -163,10 +137,6 @@ describe('calculateWPM function', () => {
 
 describe('calculateAccuary function', () => {
   test('should always return a number', () => {
-    expect(calculateAccuracy()).toBeNaN()
-    expect(calculateAccuracy(undefined, 10)).toBeNaN()
-    expect(calculateAccuracy(null, -1)).toBeNaN()
-
     const wordSequence = [
       new Word('hello'),
       new Word('world'),
@@ -181,7 +151,7 @@ describe('calculateAccuary function', () => {
 
     expect(calculateAccuracy(wordSequence)).toBeGreaterThan(0)
 
-    wordSequence.letterSequence = wordSequence[0].letterSequence.map(
+    wordSequence[0].letterSequence = wordSequence[0].letterSequence.map(
       letter => new Letter(letter.original, letter.original)
     )
 
@@ -192,8 +162,8 @@ describe('calculateAccuary function', () => {
 })
 
 describe('getStatistics function', () => {
-  test('should be numbers', () => {    
-    const output = Object.values(getStatistics())
+  test('should be numbers', () => {
+    const output = Object.values(getStatistics([], 0))
       .map(val => typeof val)
       .every(type => type === 'number')
 

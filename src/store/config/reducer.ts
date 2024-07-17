@@ -1,6 +1,9 @@
-import actionType from './action'
+import { Config } from 'utils/store'
+import actionType, { ActionType } from './action'
 
-function configReducer(state, { type, payload }) {
+export type DispatchParam = { type: ActionType, payload: Partial<Config> }
+
+function configReducer(state: Config, { type, payload }: DispatchParam): Config {
   switch (type) {
     case actionType.CHANGE_LANGUAGE:
       return {
@@ -13,7 +16,7 @@ function configReducer(state, { type, payload }) {
         duration: payload.duration,
       }
     default:
-      break
+      return state
   }
 }
 

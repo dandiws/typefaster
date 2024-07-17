@@ -1,10 +1,11 @@
 import { memo } from 'react'
 import { Text } from 'theme-ui'
-import { isCorrectlyTyped } from '../utils/Word'
-import Letter from './Letter'
+import Word, { isCorrectlyTyped } from '../utils/Word'
+import LetterComponent from './Letter'
+import Letter from 'utils/Letter'
 
-const Word = memo(
-  ({ word, cursorIndex }) => {
+const WordComponent = memo(
+  ({ word, cursorIndex }: { word: Word, cursorIndex?: number }) => {
     return (
       word.show && (
         <Text ref={word.elRef} as="span">
@@ -21,14 +22,12 @@ const Word = memo(
             })}
           >
             {word.letterSequence.map((l, i) => (
-              <Letter cursor={i === cursorIndex} key={i} letter={l} />
+              <LetterComponent cursor={i === cursorIndex} key={i} letter={l} />
             ))}
           </Text>
-          <Letter
+          <LetterComponent
             cursor={cursorIndex >= word.originalWord.length}
-            letter={{
-              original: ' ',
-            }}
+            letter={new Letter(' ')}
           />
         </Text>
       )
@@ -40,4 +39,4 @@ const Word = memo(
     prevProps.word.isTyped === nextProps.word.isTyped
 )
 
-export default Word
+export default WordComponent

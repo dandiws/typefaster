@@ -1,4 +1,4 @@
-import React from 'react'
+import { expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react'
 import Word from 'utils/Word'
 import WordComponent from 'components/Word'
@@ -7,7 +7,7 @@ import MockThemeUI from 'components/MockThemeUI'
 import { matchers } from '@emotion/jest'
 
 // Add the custom matchers provided by '@emotion/jest'
-expect.extend(matchers)
+expect.extend(matchers as any)
 
 
 test('Word component null if word.show is false', () => {
@@ -25,7 +25,7 @@ test('Word component render correct word', () => {
       <WordComponent word={word} />
     </MockThemeUI>
   )
-  expect(screen.getByTestId('word')).toHaveTextContent('javascript')
+  expect(screen.getByTestId('word').textContent).toBe('javascript')
 })
 
 test('Correctly typed word is not strike through', () => {

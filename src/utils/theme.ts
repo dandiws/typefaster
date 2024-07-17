@@ -7,7 +7,7 @@ export function createColorTheme({
   incorrectLetter,
   extraLetter,
   caret,
-}) {
+}: any) {
   return {
     background,
     text,

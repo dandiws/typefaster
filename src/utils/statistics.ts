@@ -1,6 +1,6 @@
-import { isCorrectlyTyped } from '../utils/Word'
+import Word, { isCorrectlyTyped } from '../utils/Word'
 
-export function getCorrectWordSequence (wordSequence) {
+export function getCorrectWordSequence (wordSequence: Array<Word>) {
   if (!Array.isArray(wordSequence)) {
     return []
   }
@@ -9,7 +9,7 @@ export function getCorrectWordSequence (wordSequence) {
   return typedWordSeq.filter(word => isCorrectlyTyped(word))
 }
 
-export function getIncorrectWordSequence (wordSequence) {
+export function getIncorrectWordSequence (wordSequence: Array<Word>) {
   if (!Array.isArray(wordSequence)) {
     return []
   }
@@ -18,7 +18,7 @@ export function getIncorrectWordSequence (wordSequence) {
   return typedWordSeq.filter(word => !isCorrectlyTyped(word))
 }
 
-export function calculateWPM (wordSequence, seconds) {
+export function calculateWPM (wordSequence: Array<Word>, seconds: number) {
   if (!Array.isArray(wordSequence) || seconds < 0) {
     return NaN
   }
@@ -34,7 +34,7 @@ export function calculateWPM (wordSequence, seconds) {
   )
 }
 
-export function calculateAccuracy (wordSequence) {
+export function calculateAccuracy (wordSequence: Array<Word>): number {
   if (!Array.isArray(wordSequence)) {
     return NaN
   }
@@ -60,7 +60,7 @@ export function calculateAccuracy (wordSequence) {
   return Math.round((correctKeys / totalKeys) * 100) / 100
 }
 
-export function getStatistics (wordSequence, seconds) {
+export function getStatistics (wordSequence: Array<Word>, seconds: number) {
   return {
     wpm: calculateWPM(wordSequence, seconds),
     accuracy: calculateAccuracy(wordSequence),

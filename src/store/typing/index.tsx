@@ -1,11 +1,16 @@
-import { createContext, useContext, useEffect, useReducer } from 'react'
+import { createContext, Dispatch, useContext, useEffect, useReducer } from 'react'
 import typingReducer from './reducer'
-import { createTypingStore } from '../../utils/store'
-import { INITIALIZE_TYPING_STORE } from './action'
+import { createTypingStore, Typing } from '../../utils/store'
+import { ActionType, INITIALIZE_TYPING_STORE } from './action'
 
 const initialStore = createTypingStore({})
 
-export const TypingStoreContext = createContext()
+interface TypingContext {
+  typing: Typing;
+  dispatch: Dispatch<{ type: ActionType, payload?: Partial<Typing> }>;
+}
+
+export const TypingStoreContext = createContext<TypingContext>(null)
 
 export const TypingStoreProvider = ({ children, lang }) => {
   const [typing, dispatch] = useReducer(typingReducer, initialStore)

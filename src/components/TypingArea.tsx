@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
-import Word from './Word'
+import WordComponent from './Word'
 import useTypingStore from '../store/typing'
 import actionType from '../store/typing/action'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -20,7 +20,7 @@ const DISABLED_CTRL = ['a', 'c', 'v']
 
 const TypingArea = memo(() => {
   const { typing, dispatch } = useTypingStore()
-  const inputRef = useRef()
+  const inputRef = useRef<HTMLInputElement>()
   const [blur, setBlur] = useState(false)
 
   useHotkeys('shift+Enter', () => {
@@ -32,7 +32,10 @@ const TypingArea = memo(() => {
     keyup: true,
   })
 
-  const focusInput = useCallback(() => {    
+  const focusInput = useCallback(() => {
+    if(!inputRef.current)
+      return
+
     return inputRef.current.focus()
   }, [])
 
@@ -145,8 +148,8 @@ const TypingArea = memo(() => {
             disabled={typing.typingStatus === 'done'}
           />
           {typing.wordSequence.map((w, i) => (
-            <Word
-              blur={blur}
+            <WordComponent
+              // blur={blur}
               key={w.key}
               word={w}
               cursorIndex={
