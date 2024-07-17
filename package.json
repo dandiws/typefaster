@@ -2,22 +2,24 @@
   "name": "typefaster-react",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
+    "@emotion/core": "^10.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "lodash": "^4.17.21",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hotkeys-hook": "^2.3.1",
-    "react-scripts": "4.0.0",
     "theme-ui": "^0.3.1",
+    "vite-jsconfig-paths": "^2.0.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -38,6 +40,8 @@
     ]
   },
   "devDependencies": {
-    "@emotion/jest": "^11.2.1"
+    "@emotion/jest": "^11.2.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.3.4"
   }
 }
