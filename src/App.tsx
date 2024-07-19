@@ -40,7 +40,7 @@ const App = () => {
   );
 
   return (
-    <div className="flex flex-col justify-center min-h-screen px-4 md:px-5 py-3 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg">
+    <div className="flex flex-col justify-center min-h-[100svh] px-4 md:px-5 py-3 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg">
       <div className="py-3 flex items-center justify-between">
         <h2 className="text-lg font-bold">Typefaster</h2>
         <DropdownMenu.Root>

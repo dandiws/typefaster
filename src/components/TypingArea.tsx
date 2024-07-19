@@ -1,7 +1,7 @@
 import type React from "react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Box, Flex, Input, type SxStyleProp } from "theme-ui";
+import { Box, Flex, type SxStyleProp } from "theme-ui";
 import useTypingStore from "../store/typing";
 import actionType from "../store/typing/action";
 import Hotkey from "./Hotkey";
@@ -133,7 +133,7 @@ const TypingArea = memo(() => {
             whiteSpace: "pre-wrap",
           }}
         >
-          <Input
+          <input
             ref={inputRef}
             type="text"
             value={typing.inputValue}
@@ -143,14 +143,12 @@ const TypingArea = memo(() => {
               setBlur(true);
             }}
             onFocus={() => setBlur(false)}
-            autoFocus
-            sx={{
-              width: 10,
-              position: "absolute",
-              opacity: 0,
-            }}
+            className="w-10 opacity-0 absolute"
             onKeyDown={handleKeyDown}
             disabled={typing.typingStatus === "done"}
+            autoCapitalize="off"
+            // biome-ignore lint/a11y/noAutofocus: <explanation>
+            autoFocus
           />
           {typing.wordSequence.map((w, i) => (
             <WordComponent

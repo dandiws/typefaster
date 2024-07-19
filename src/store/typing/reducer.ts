@@ -111,7 +111,7 @@ const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
       const nextWord = state.wordSequence[wordIndex + 1];
       if (activeWord.elRef.current && nextWord) {
         const activeWordY = activeWord.elRef.current.getBoundingClientRect().y;
-        const nextWordY = nextWord.elRef.current.getBoundingClientRect().y;
+        const nextWordY = nextWord.elRef.current?.getBoundingClientRect().y;
 
         // if new line
         if (activeWordY !== nextWordY) {
