@@ -3,6 +3,11 @@ export const language = {
   en: "en",
 } as const;
 
+export const languageFlagMoji = {
+  id: "🇮🇩",
+  en: "🇬🇧",
+};
+
 export const mode = {
   time: "time",
   word: "word",

@@ -1,12 +1,17 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from "theme-ui";
-import { Flex } from "theme-ui";
 import useTypingStore from "../store/typing";
 
-const ListItem = (props: React.PropsWithChildren) => (
-  <div sx={{ fontSize: 2, color: "secondaryText", mx: 3, mb: 3 }} {...props} />
-);
+const ListItem = ({
+  title,
+  children,
+  ...props
+}: React.PropsWithChildren<{ title: string }>) => {
+  return (
+    <div className="p-2  rounded-md w-[120px] text-center" {...props}>
+      <div className="text-sm text-zinc-400 mb-2">{title}</div>
+      <div className="text-xl font-bold">{children}</div>
+    </div>
+  );
+};
 
 const Statistic = () => {
   const { typing } = useTypingStore();
@@ -14,23 +19,19 @@ const Statistic = () => {
   const { accuracy, wpm, correctWords, incorrectWords } = statistics;
 
   return (
-    <Flex
-      sx={{
-        width: "100%",
-        justifyContent: "center",
-        flexDirection: ["column", "row"],
-      }}
-    >
-      <ListItem>WPM : {wpm >= 0 ? wpm : "-"}</ListItem>
-      <ListItem>Acc : {accuracy >= 0 ? accuracy : "-"}</ListItem>
-      <ListItem>
-        Correct words : {correctWords >= 0 ? correctWords : "-"}
+    <div className="flex w-full justify-center flex-row gap-3">
+      <ListItem title="WPM">{wpm >= 0 ? wpm : "-"}</ListItem>
+      <ListItem title="Accuracy">
+        {accuracy >= 0 ? `${accuracy * 100}%` : "-"}
       </ListItem>
-      <ListItem>
-        Incorrect words: {incorrectWords >= 0 ? incorrectWords : "-"}
+      <ListItem title="Correct words">
+        {correctWords >= 0 ? correctWords : "-"}
+      </ListItem>
+      <ListItem title="Incorrect words">
+        {incorrectWords >= 0 ? incorrectWords : "-"}
       </ListItem>
       {/* <ListItem>Time: {time >= 0 ? time : '-'}</ListItem> */}
-    </Flex>
+    </div>
   );
 };
 
