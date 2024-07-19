@@ -1,8 +1,11 @@
-export function getStatus({ original, typed }: { original?: string | null; typed?: string | null }) {
-  if (original && !typed) return 'untyped'
-  if (original && typed) return typed === original ? 'correct' : 'incorrect'
-  if (!original && typed) return 'extra'
-  return null
+export function getStatus({
+  original,
+  typed,
+}: { original?: string | null; typed?: string | null }) {
+  if (original && !typed) return "untyped";
+  if (original && typed) return typed === original ? "correct" : "incorrect";
+  if (!original && typed) return "extra";
+  return null;
 }
 
 class Letter {
@@ -17,4 +20,4 @@ class Letter {
   }
 }
 
-export default Letter
+export default Letter;

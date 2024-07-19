@@ -1,10 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
-import { ThemeProvider } from 'theme-ui'
-import theme from './theme'
-import { Global, css } from '@emotion/core'
-import { ConfigStoreProvider } from './store/config'
+import { Global, css } from "@emotion/core";
+import React from "react";
+import ReactDOM from "react-dom";
+import { ThemeProvider } from "theme-ui";
+import App from "./App";
+import { ConfigStoreProvider } from "./store/config";
+import theme from "./theme";
+
+import "./index.css";
 // import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
@@ -30,8 +32,8 @@ ReactDOM.render(
       </ConfigStoreProvider>
     </ThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root')
-)
+  document.getElementById("root"),
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

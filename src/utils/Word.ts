@@ -1,11 +1,11 @@
-import { createRef, RefObject } from 'react'
-import { sampleSize } from 'lodash'
-import Letter from './Letter'
+import { sampleSize } from "lodash";
+import { type RefObject, createRef } from "react";
+import Letter from "./Letter";
 
 class Word {
   key: string;
   originalWord: string;
-  elRef: RefObject<any>;
+  elRef: RefObject<HTMLDivElement>;
   show: boolean;
   letterSequence: Letter[];
   isTyped: boolean;
@@ -15,7 +15,7 @@ class Word {
     this.originalWord = originalWord;
     this.elRef = createRef();
     this.show = true;
-    this.letterSequence = originalWord.split('').map(c => new Letter(c));
+    this.letterSequence = originalWord.split("").map((c) => new Letter(c));
     this.isTyped = false;
   }
 }
@@ -23,13 +23,15 @@ class Word {
 export function isCorrectlyTyped(word: Word) {
   return word.letterSequence
     .map((letter) => letter.status)
-    .every((status) => status === 'correct')
+    .every((status) => status === "correct");
 }
 
 export function createWordSequence(arrOfString: string[], n?: number) {
-  if (n) arrOfString = sampleSize(arrOfString, n)
+  if (n) {
+    return sampleSize(arrOfString, n).map((s) => new Word(s));
+  }
 
-  return arrOfString.map((s, i) => new Word(s))
+  return arrOfString.map((s) => new Word(s));
 }
 
-export default Word
+export default Word;

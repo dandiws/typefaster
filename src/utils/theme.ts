@@ -1,3 +1,14 @@
+interface ColorTheme {
+  background: string;
+  text: string;
+  typingBackground: string;
+  untypedLetter: string;
+  correctLetter: string;
+  incorrectLetter: string;
+  extraLetter: string;
+  caret: string;
+}
+
 export function createColorTheme({
   background,
   text,
@@ -7,7 +18,7 @@ export function createColorTheme({
   incorrectLetter,
   extraLetter,
   caret,
-}: any) {
+}: ColorTheme) {
   return {
     background,
     text,
@@ -17,5 +28,5 @@ export function createColorTheme({
     incorrectLetter,
     extraLetter,
     caret,
-  }
+  };
 }

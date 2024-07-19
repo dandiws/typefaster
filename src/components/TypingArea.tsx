@@ -1,131 +1,136 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Flex, Input } from 'theme-ui'
-import WordComponent from './Word'
-import useTypingStore from '../store/typing'
-import actionType from '../store/typing/action'
-import { useHotkeys } from 'react-hotkeys-hook'
-import Hotkey from './Hotkey'
+import type React from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Box, Flex, Input, type SxStyleProp } from "theme-ui";
+import useTypingStore from "../store/typing";
+import actionType from "../store/typing/action";
+import Hotkey from "./Hotkey";
+import WordComponent from "./Word";
 
 const DISABLED_KEYS = [
-  'arrowup',
-  'Arrowdown',
-  'arrowleft',
-  'arrowright',
-  'home',
-  'end',
-  'tab',
-]
+  "arrowup",
+  "Arrowdown",
+  "arrowleft",
+  "arrowright",
+  "home",
+  "end",
+  "tab",
+];
 
-const DISABLED_CTRL = ['a', 'c', 'v']
+const DISABLED_CTRL = ["a", "c", "v"];
 
 const TypingArea = memo(() => {
-  const { typing, dispatch } = useTypingStore()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [blur, setBlur] = useState(false)
+  const { typing, dispatch } = useTypingStore();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [blur, setBlur] = useState(false);
 
-  useHotkeys('shift+Enter', () => {
-    dispatch({ type: actionType.REFRESH_TYPING_STORE })
-  })
+  useHotkeys("shift+Enter", () => {
+    dispatch({ type: actionType.REFRESH_TYPING_STORE });
+  });
 
-  useHotkeys('shift+f', () => focusInput(), {
+  useHotkeys("shift+f", () => focusInput(), {
     keydown: false,
     keyup: true,
-  })
+  });
 
   const focusInput = useCallback(() => {
-    if(!inputRef.current)
-      return
+    if (!inputRef.current) return;
 
-    return inputRef.current.focus()
-  }, [])
+    return inputRef.current.focus();
+  }, []);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (DISABLED_KEYS.includes(e.key.toLowerCase())) {
-      e.preventDefault()
-      return
-    }
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (DISABLED_KEYS.includes(e.key.toLowerCase())) {
+        e.preventDefault();
+        return;
+      }
 
-    if (DISABLED_CTRL.includes(e.key.toLowerCase()) && e.ctrlKey) {
-      e.preventDefault()
-      return
-    }
-  }, [])
+      if (DISABLED_CTRL.includes(e.key.toLowerCase()) && e.ctrlKey) {
+        e.preventDefault();
+        return;
+      }
+    },
+    [],
+  );
 
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (typing.typingStatus === 'done')
-        dispatch({ type: actionType.REFRESH_TYPING_STORE })
+      if (typing.typingStatus === "done")
+        dispatch({ type: actionType.REFRESH_TYPING_STORE });
 
-      focusInput()
+      focusInput();
     },
-    [dispatch, typing.typingStatus, focusInput]
-  )
+    [dispatch, typing.typingStatus, focusInput],
+  );
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (typing.typingStatus === 'pending') {
-        dispatch({ type: actionType.START_TYPING })
+      if (typing.typingStatus === "pending") {
+        dispatch({ type: actionType.START_TYPING });
       }
 
-      const value = e.target.value
-      if (value.endsWith(' ')) {
-        const seconds = (Date.now() - (typing.startTime ?? 0)) / 1000
+      const value = e.target.value;
+      if (value.endsWith(" ")) {
+        const seconds = (Date.now() - (typing.startTime ?? 0)) / 1000;
         dispatch({
           type: actionType.GOTO_NEXT_WORD,
           payload: { typingMinutes: seconds },
-        })
+        });
       } else {
         dispatch({
           type: actionType.UPDATE_WORD,
           payload: { inputValue: value },
-        })
+        });
       }
     },
-    [dispatch, typing.typingStatus, typing.startTime]
-  )
+    [dispatch, typing.typingStatus, typing.startTime],
+  );
 
   useEffect(() => {
     const isInputFocused =
-      inputRef.current && inputRef.current === document.activeElement
+      inputRef.current && inputRef.current === document.activeElement;
 
-    if (isInputFocused) setBlur(false)
-    else setBlur(true)
-  }, [inputRef])
+    if (isInputFocused) setBlur(false);
+    else setBlur(true);
+  }, []);
 
   useEffect(() => {
-    if (typing.typingStatus === 'done') {
-      setBlur(true)
+    if (typing.typingStatus === "done") {
+      setBlur(true);
     }
-    if (typing.typingStatus === 'pending') {
-      focusInput()
+    if (typing.typingStatus === "pending") {
+      focusInput();
     }
-  }, [typing.typingStatus, focusInput])
+  }, [typing.typingStatus, focusInput]);
 
   return (
     <Box
       sx={{
-        position: 'relative',
+        position: "relative",
       }}
     >
       <Box
-        sx={{
-          bg: 'typingBackground',
-          borderRadius: 5,
-          p: 3,
-          filter: blur && 'blur(5px)',
-          opacity: blur && 0.25,
-        } as any}
+        sx={
+          {
+            bg: "typingBackground",
+            borderRadius: 5,
+            p: 3,
+            filter: blur && "blur(5px)",
+            opacity: blur && 0.25,
+          } as unknown as SxStyleProp
+        }
       >
         <Box
           sx={{
             px: 1,
-            fontFamily: 'monospace',
+            fontFamily: "monospace",
             fontSize: 21,
-            color: 'GrayText',
+            color: "GrayText",
             height: 70,
-            overflow: 'hidden',
-            lineHeight: '35px',
-            whiteSpace: 'pre-wrap',
+            overflow: "hidden",
+            lineHeight: "35px",
+            whiteSpace: "pre-wrap",
           }}
         >
           <Input
@@ -135,17 +140,17 @@ const TypingArea = memo(() => {
             onChange={handleInputChange}
             onBlur={() => {
               // focusInput()
-              setBlur(true)
+              setBlur(true);
             }}
             onFocus={() => setBlur(false)}
             autoFocus
             sx={{
               width: 10,
-              position: 'absolute',
+              position: "absolute",
               opacity: 0,
             }}
             onKeyDown={handleKeyDown}
-            disabled={typing.typingStatus === 'done'}
+            disabled={typing.typingStatus === "done"}
           />
           {typing.wordSequence.map((w, i) => (
             <WordComponent
@@ -163,21 +168,21 @@ const TypingArea = memo(() => {
         <Flex
           onClick={handleOverlayClick}
           sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
+            position: "absolute",
+            width: "100%",
+            height: "100%",
             left: 0,
             top: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'text',
+            justifyContent: "center",
+            alignItems: "center",
+            color: "text",
             fontWeight: 500,
-            cursor: 'pointer',
+            cursor: "pointer",
             fontSize: 20,
-            flexDirection: 'column',
+            flexDirection: "column",
           }}
         >
-          {typing.typingStatus === 'done' ? (
+          {typing.typingStatus === "done" ? (
             <>
               <div>
                 Click or <Hotkey>Shift+Enter</Hotkey> to start new test
@@ -191,7 +196,7 @@ const TypingArea = memo(() => {
         </Flex>
       )}
     </Box>
-  )
-})
+  );
+});
 
-export default TypingArea
+export default TypingArea;

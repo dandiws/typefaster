@@ -1,33 +1,38 @@
-import actionType, { Action } from './action'
-import Word, { createWordSequence } from '../../utils/Word'
-import Letter from '../../utils/Letter'
-import { getStatistics } from '../../utils/statistics'
-import { createTypingStore, Typing } from '../../utils/store'
-import { Reducer } from 'react'
+import type { Reducer } from "react";
+import Letter from "../../utils/Letter";
+import type Word from "../../utils/Word";
+import { createWordSequence } from "../../utils/Word";
+import { getStatistics } from "../../utils/statistics";
+import { type Typing, createTypingStore } from "../../utils/store";
+import actionType, { type Action } from "./action";
 
-function replaceItemInArray<T>(originalArr: Array<T>, index: number, newItem: T) {
-  return originalArr.map((item, i) => (i === index ? newItem : item))
+function replaceItemInArray<T>(
+  originalArr: Array<T>,
+  index: number,
+  newItem: T,
+) {
+  return originalArr.map((item, i) => (i === index ? newItem : item));
 }
 
 function hideWord(word: Word) {
   return {
     ...word,
     show: false,
-  }
+  };
 }
 
 function markAsTyped(word: Word) {
   return {
     ...word,
     isTyped: true,
-  }
+  };
 }
 
 const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
-  const [wordIndex, letterIndex] = state.caretPosition
-  const activeWord = state.wordSequence[wordIndex]
-  const N_WORD_TOBE_GENERATED = 20 //initial word count
-  const APPEND_WORD_TRESHOLD = 20 //minimal word has not been typed which new words will be generated (appended)
+  const [wordIndex, letterIndex] = state.caretPosition;
+  const activeWord = state.wordSequence[wordIndex];
+  const N_WORD_TOBE_GENERATED = 20; //initial word count
+  const APPEND_WORD_TRESHOLD = 20; //minimal word has not been typed which new words will be generated (appended)
 
   switch (type) {
     case actionType.INITIALIZE_TYPING_STORE: {
@@ -35,94 +40,95 @@ const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
         languageJSON: payload?.languageJSON,
         wordSequence: createWordSequence(
           payload?.languageJSON?.words || [],
-          N_WORD_TOBE_GENERATED
+          N_WORD_TOBE_GENERATED,
         ),
-      })
+      });
     }
 
     case actionType.START_TYPING:
       return {
         ...state,
-        typingStatus: 'started',
+        typingStatus: "started",
         startTime: Date.now(),
-        inputValue: '',
-      }
+        inputValue: "",
+      };
 
     case actionType.DONE_TYPING:
       return {
         ...state,
-        typingStatus: 'done',
+        typingStatus: "done",
         finishTime: Date.now(),
-      }
+      };
 
     case actionType.UPDATE_WORD: {
-      if (state.wordSequence.length <= 0) return state
+      if (state.wordSequence.length <= 0) return state;
 
-      const inputValueArr = payload?.inputValue?.split('') || []
+      const inputValueArr = payload?.inputValue?.split("") || [];
       const originalLetterSeq = activeWord.letterSequence.filter(
-        (l) => l.original
-      )
+        (l) => l.original,
+      );
 
       let updatedLetterSeq = originalLetterSeq.map(
-        (l, i) => new Letter(l.original, inputValueArr[i])
-      )
+        (l, i) => new Letter(l.original, inputValueArr[i]),
+      );
 
-      const extraLetters = inputValueArr.slice(activeWord.originalWord.length)
+      const extraLetters = inputValueArr.slice(activeWord.originalWord.length);
 
       updatedLetterSeq = [
         ...updatedLetterSeq,
         ...extraLetters.map((l) => new Letter(null, l)),
-      ]
+      ];
 
       const updatedActiveWord = {
         ...activeWord,
         letterSequence: updatedLetterSeq,
-      }
+      };
 
       return {
         ...state,
         wordSequence: replaceItemInArray(
           state.wordSequence,
           wordIndex,
-          updatedActiveWord
+          updatedActiveWord,
         ),
         caretPosition: [wordIndex, inputValueArr.length],
-        inputValue: payload?.inputValue || '',
-      }
+        inputValue: payload?.inputValue || "",
+      };
     }
 
     case actionType.GOTO_NEXT_WORD: {
       // if cursor at first letter of word, do nothing
-      if (letterIndex === 0) return state
+      if (letterIndex === 0) return state;
 
-      let updatedWord = markAsTyped(activeWord)
+      const updatedWord = markAsTyped(activeWord);
       let updatedWordSeq = replaceItemInArray(
         state.wordSequence,
         wordIndex,
-        updatedWord
-      )
+        updatedWord,
+      );
 
       // if new line detected, hide all word in previous line
-      const nextWord = state.wordSequence[wordIndex + 1]
+      const nextWord = state.wordSequence[wordIndex + 1];
       if (activeWord.elRef.current && nextWord) {
-        const activeWordY = activeWord.elRef.current.getBoundingClientRect().y
-        const nextWordY = nextWord.elRef.current.getBoundingClientRect().y
+        const activeWordY = activeWord.elRef.current.getBoundingClientRect().y;
+        const nextWordY = nextWord.elRef.current.getBoundingClientRect().y;
 
         // if new line
         if (activeWordY !== nextWordY) {
           updatedWordSeq = state.wordSequence.map((w, i) => {
-            if (i <= wordIndex) return hideWord(w)
-            return w
-          })
+            if (i <= wordIndex) return hideWord(w);
+            return w;
+          });
 
           // if running out of word, generate and append new sequence of word
-          const remaining_word_count = state.wordSequence.length - wordIndex + 1
+          const remaining_word_count =
+            state.wordSequence.length - wordIndex + 1;
           if (remaining_word_count < APPEND_WORD_TRESHOLD) {
             const newlyGeneratedWordSeq = createWordSequence(
               state.languageJSON?.words || [],
-              N_WORD_TOBE_GENERATED
-            )
-            updatedWordSeq = [...updatedWordSeq, ...newlyGeneratedWordSeq]
+              N_WORD_TOBE_GENERATED,
+            );
+            updatedWordSeq = [...updatedWordSeq, ...newlyGeneratedWordSeq];
           }
         }
       }
@@ -132,9 +138,9 @@ const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
         ...state,
         wordSequence: updatedWordSeq,
         caretPosition: [wordIndex + 1, 0],
-        inputValue: '',
+        inputValue: "",
         statistics: getStatistics(updatedWordSeq, payload?.typingMinutes || -1),
-      }
+      };
     }
 
     case actionType.REFRESH_TYPING_STORE: {
@@ -142,14 +148,14 @@ const typingReducer: Reducer<Typing, Action> = (state, { type, payload }) => {
         languageJSON: state.languageJSON,
         wordSequence: createWordSequence(
           state.languageJSON?.words || [],
-          N_WORD_TOBE_GENERATED
+          N_WORD_TOBE_GENERATED,
         ),
-      })
+      });
     }
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default typingReducer
+export default typingReducer;

@@ -1,52 +1,55 @@
-import { Box, Flex, Heading, Link, Select } from 'theme-ui'
-import TypingArea from 'components/TypingArea'
-import useConfigStore from './store/config'
-import { TypingStoreProvider } from './store/typing'
-import { CHANGE_LANGUAGE } from './store/config/action'
-import { Language, language, Theme, theme } from './utils/constant'
-import React, { useCallback } from 'react'
-import Statistic from 'components/Statistic'
-import Timer from 'components/Timer'
+import Statistic from "components/Statistic";
+import Timer from "components/Timer";
+import TypingArea from "components/TypingArea";
+import type React from "react";
+import { useCallback } from "react";
+import { Box, Flex, Heading, Link, Select } from "theme-ui";
+import useConfigStore from "./store/config";
+import { CHANGE_LANGUAGE } from "./store/config/action";
+import { TypingStoreProvider } from "./store/typing";
+import { type Language, type Theme, language, theme } from "./utils/constant";
 
 const App = () => {
-  const { config, dispatch, setTheme } = useConfigStore()
+  const { config, dispatch, setTheme } = useConfigStore();
 
   const handleSelectThemeChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const selectedValue = e.target.options[e.target.selectedIndex].value as Theme
-      setTheme(selectedValue)
+      const selectedValue = e.target.options[e.target.selectedIndex]
+        .value as Theme;
+      setTheme(selectedValue);
     },
-    [setTheme]
-  )
+    [setTheme],
+  );
 
   const handleSelectLanguageChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const selectedValue = e.target.options[e.target.selectedIndex].value as Language
+      const selectedValue = e.target.options[e.target.selectedIndex]
+        .value as Language;
       dispatch({
         type: CHANGE_LANGUAGE,
         payload: { lang: selectedValue },
-      })
+      });
     },
-    [dispatch]
-  )
+    [dispatch],
+  );
 
   return (
     <Flex
       sx={{
         maxWidth: [500, 700, 900],
-        mx: 'auto',
+        mx: "auto",
         py: 3,
         px: [4, 5],
-        justifyContent: 'center',
-        flexDirection: 'column',
-        minHeight: '100vh',
+        justifyContent: "center",
+        flexDirection: "column",
+        minHeight: "100vh",
       }}
     >
       <Flex
         sx={{
           py: 3,
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Heading>Typefaster</Heading>
@@ -55,8 +58,8 @@ const App = () => {
         sx={{
           minHeight: 105,
           flexGrow: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <TypingStoreProvider lang={config.lang}>
@@ -74,17 +77,17 @@ const App = () => {
       <Flex
         sx={{
           py: 3,
-          justifyContent: ['center', 'center', 'space-between'],
-          alignItems: 'center',
-          color: 'GrayText',
-          flexDirection: ['column', 'column', 'row'],
+          justifyContent: ["center", "center", "space-between"],
+          alignItems: "center",
+          color: "GrayText",
+          flexDirection: ["column", "column", "row"],
         }}
       >
         <Box sx={{ mb: 3 }}>
-          &copy; 2020 / Dandi Wiratsangka /{' '}
+          &copy; 2020 / Dandi Wiratsangka /{" "}
           <Link
             sx={{
-              color: 'text',
+              color: "text",
             }}
             href="https://github.com/dandiws/typefaster"
             target="_blank"
@@ -96,7 +99,7 @@ const App = () => {
         <Flex sx={{ mb: 3 }}>
           <Select
             onChange={handleSelectThemeChange}
-            sx={{ py: 0, pr: 30, width: 'auto', ml: 3 }}
+            sx={{ py: 0, pr: 30, width: "auto", ml: 3 }}
             value={config.theme}
           >
             {Object.entries(theme).map(([key, value]) => (
@@ -108,7 +111,7 @@ const App = () => {
           <Select
             onChange={handleSelectLanguageChange}
             value={config.lang}
-            sx={{ py: 0, pr: 30, width: 'auto', ml: 3 }}
+            sx={{ py: 0, pr: 30, width: "auto", ml: 3 }}
           >
             {Object.entries(language).map(([key, value]) => (
               <option key={key} value={key}>
@@ -119,7 +122,7 @@ const App = () => {
         </Flex>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default App
+export default App;

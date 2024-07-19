@@ -1,5 +1,5 @@
-import { Config } from 'utils/store'
-import actionType, { Action } from './action'
+import type { Config } from "utils/store";
+import actionType, { type Action } from "./action";
 
 function configReducer(state: Config, { type, payload }: Action): Config {
   switch (type) {
@@ -7,15 +7,15 @@ function configReducer(state: Config, { type, payload }: Action): Config {
       return {
         ...state,
         lang: payload.lang ?? state.lang,
-      }
+      };
     case actionType.CHANGE_DURATION:
       return {
         ...state,
         duration: payload.duration ?? state.duration,
-      }
+      };
     default:
-      return state
+      return state;
   }
 }
 
-export default configReducer
+export default configReducer;

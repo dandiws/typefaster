@@ -1,11 +1,12 @@
-import { memo } from 'react'
-import { Text } from 'theme-ui'
-import Word, { isCorrectlyTyped } from '../utils/Word'
-import LetterComponent from './Letter'
-import Letter from 'utils/Letter'
+import { memo } from "react";
+import { Text } from "theme-ui";
+import Letter from "utils/Letter";
+import type Word from "../utils/Word";
+import { isCorrectlyTyped } from "../utils/Word";
+import LetterComponent from "./Letter";
 
 const WordComponent = memo(
-  ({ word, cursorIndex }: { word: Word, cursorIndex?: number | null }) => {
+  ({ word, cursorIndex }: { word: Word; cursorIndex?: number | null }) => {
     return (
       word.show && (
         <Text ref={word.elRef} as="span">
@@ -13,30 +14,34 @@ const WordComponent = memo(
             data-testid="word"
             as="span"
             sx={(theme) => ({
-              display: 'inline-block',
+              display: "inline-block",
               textDecorationColor: theme.colors.incorrectLetter,
               textDecoration:
                 word.isTyped && !isCorrectlyTyped(word)
-                  ? 'line-through'
-                  : 'none',
+                  ? "line-through"
+                  : "none",
             })}
           >
             {word.letterSequence.map((l, i) => (
-              <LetterComponent cursor={i === cursorIndex} key={i} letter={l} />
+              <LetterComponent
+                cursor={i === cursorIndex}
+                key={`${l.original ?? ""}-${i}`}
+                letter={l}
+              />
             ))}
           </Text>
           <LetterComponent
-            cursor={!!cursorIndex && (cursorIndex >= word.originalWord.length)}
-            letter={new Letter(' ')}
+            cursor={!!cursorIndex && cursorIndex >= word.originalWord.length}
+            letter={new Letter(" ")}
           />
         </Text>
       )
-    )
+    );
   },
   (prevProps, nextProps) =>
     prevProps.cursorIndex === nextProps.cursorIndex &&
     prevProps.word.show === nextProps.word.show &&
-    prevProps.word.isTyped === nextProps.word.isTyped
-)
+    prevProps.word.isTyped === nextProps.word.isTyped,
+);
 
-export default WordComponent
+export default WordComponent;

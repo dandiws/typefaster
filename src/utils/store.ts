@@ -1,5 +1,5 @@
-import { Language, Mode, Theme } from "./constant";
-import Word from "./Word";
+import type Word from "./Word";
+import type { Language, Mode, Theme } from "./constant";
 
 export interface Config {
   lang: Language;
@@ -11,7 +11,7 @@ export interface Config {
 interface LanguageJSON {
   lang: string;
   name: string;
-  words: string[]
+  words: string[];
 }
 
 export interface Typing {
@@ -25,19 +25,19 @@ export interface Typing {
     correctWords: number;
     incorrectWords: number;
   };
-  typingStatus: 'pending' | 'done' | 'started';
+  typingStatus: "pending" | "done" | "started";
   typingMinutes?: number;
   startTime: number | null;
   finishTime: number | null;
 }
 
 export function createTypingStore({
-  inputValue = '',
+  inputValue = "",
   languageJSON = null,
   wordSequence = [],
   caretPosition = [0, 0],
   statistics = { accuracy: 0, correctWords: 0, incorrectWords: 0, wpm: 0 },
-  typingStatus = 'pending',
+  typingStatus = "pending",
   startTime = null,
   finishTime = null,
 }: Partial<Typing>): Typing {
@@ -50,19 +50,19 @@ export function createTypingStore({
     typingStatus,
     startTime,
     finishTime,
-  }
+  };
 }
 
 export function createConfigStore({
-  lang = 'id',
-  mode = 'time',
+  lang = "id",
+  mode = "time",
   duration = 60,
-  theme = 'default'
+  theme = "default",
 }: Partial<Config>): Config {
   return {
     lang,
     mode,
     duration,
-    theme
-  }
+    theme,
+  };
 }
