@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import LetterComponent from "components/Letter";
-import MockThemeUI from "components/MockThemeUI";
 import Letter from "utils/Letter";
 import { expect, test } from "vitest";
 
@@ -25,24 +24,12 @@ test("Letter component render correct letter - 2", () => {
 
 test("Letter component should render caret", () => {
   const letter = new Letter("a");
-  render(
-    <MockThemeUI>
-      <LetterComponent letter={letter} cursor={true} />
-    </MockThemeUI>,
-  );
-  expect(screen.getByTestId("letter")).toHaveStyleRule("content", '"|"', {
-    target: ":before",
-  });
+  render(<LetterComponent letter={letter} cursor={true} />);
+  expect(screen.getByTestId("letter")).toHaveClass("before:content-['|']");
 });
 
 test("Letter component should not render caret", () => {
   const letter = new Letter("a");
-  render(
-    <MockThemeUI>
-      <LetterComponent letter={letter} cursor={false} />
-    </MockThemeUI>,
-  );
-  expect(screen.getByTestId("letter")).not.toHaveStyleRule("content", '"|"', {
-    target: ":before",
-  });
+  render(<LetterComponent letter={letter} cursor={false} />);
+  expect(screen.getByTestId("letter")).not.toHaveClass("before:content-['|']");
 });

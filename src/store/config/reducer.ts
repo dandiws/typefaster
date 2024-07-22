@@ -13,6 +13,18 @@ function configReducer(state: Config, { type, payload }: Action): Config {
         ...state,
         duration: payload.duration ?? state.duration,
       };
+    case actionType.CHANGE_THEME: {
+      if (!payload.theme) return state;
+
+      document.documentElement.setAttribute("data-theme", payload.theme);
+      localStorage.setItem("theme", payload.theme);
+
+      return {
+        ...state,
+        theme: payload.theme ?? state.theme,
+      };
+    }
+
     default:
       return state;
   }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Flex } from "theme-ui";
 import useTypingStore from "../store/typing";
 import actionType from "../store/typing/action";
 
@@ -28,16 +27,9 @@ const Timer = ({ duration }: React.PropsWithChildren<{ duration: number }>) => {
   }, [typing.typingStatus, dispatch, duration]);
 
   return (
-    <Flex
-      sx={{
-        justifyContent: "center",
-        mb: 4,
-        fontSize: 4,
-        fontFamily: "monospace",
-      }}
-    >
+    <div className="flex justify-center mb-4 text-2xl">
       {timerCount === 0 ? "Times up!" : timerCount}
-    </Flex>
+    </div>
   );
 };
 

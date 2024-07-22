@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import MockThemeUI from "components/MockThemeUI";
 import WordComponent from "components/Word";
 import Word from "utils/Word";
 import { expect, test } from "vitest";
@@ -21,11 +20,7 @@ test("Word component null if word.show is false", () => {
 
 test("Word component render correct word", () => {
   const word = new Word("javascript");
-  render(
-    <MockThemeUI>
-      <WordComponent word={word} />
-    </MockThemeUI>,
-  );
+  render(<WordComponent word={word} />);
   expect(screen.getByTestId("word").textContent).toBe("javascript");
 });
 
@@ -37,15 +32,8 @@ test("Correctly typed word is not strike through", () => {
     status: "correct",
   }));
 
-  render(
-    <MockThemeUI>
-      <WordComponent word={word} />
-    </MockThemeUI>,
-  );
-  expect(screen.getByTestId("word")).not.toHaveStyleRule(
-    "text-decoration",
-    "line-through",
-  );
+  render(<WordComponent word={word} />);
+  expect(screen.getByTestId("word")).not.toHaveClass("line-through");
 });
 
 test("Incorrectly typed word is strike through", () => {
@@ -58,13 +46,6 @@ test("Incorrectly typed word is strike through", () => {
 
   word.letterSequence[2].status = "incorrect";
 
-  render(
-    <MockThemeUI>
-      <WordComponent word={word} />
-    </MockThemeUI>,
-  );
-  expect(screen.getByTestId("word")).toHaveStyleRule(
-    "text-decoration",
-    "line-through",
-  );
+  render(<WordComponent word={word} />);
+  expect(screen.getByTestId("word")).toHaveClass("line-through");
 });

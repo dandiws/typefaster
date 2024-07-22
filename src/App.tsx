@@ -18,15 +18,20 @@ import {
 } from "./utils/constant";
 
 const App = () => {
-  const { config, dispatch, setTheme } = useConfigStore();
+  const { config, dispatch } = useConfigStore();
 
   const handleSelectThemeChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = e.target.options[e.target.selectedIndex]
         .value as Theme;
-      setTheme(selectedValue);
+      dispatch({
+        type: "CHANGE_THEME",
+        payload: {
+          theme: selectedValue,
+        },
+      });
     },
-    [setTheme],
+    [dispatch],
   );
 
   const handleSelectLanguageChange = useCallback(

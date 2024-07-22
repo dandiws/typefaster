@@ -1,29 +1,27 @@
+import { cn } from "lib/utils";
 import { memo } from "react";
-import { Text } from "theme-ui";
 import type Letter from "utils/Letter";
+
+const letterColor: { [key: string]: string } = {
+  untyped: "text-untypedLetter",
+  correct: "text-correctLetter",
+  incorrect: "text-incorrectLetter",
+  extra: "text-extraLetter",
+};
 
 const LetterComponent = memo(
   ({ letter, cursor }: { letter: Letter; cursor?: boolean }) => (
-    <Text
+    <span
       data-testid="letter"
-      as="span"
-      sx={{
-        // @ts-ignore
-        position: "relative",
-        // @ts-ignore
-        ":before": cursor && {
-          content: '"|"',
-          color: "caret",
-          position: "absolute",
-          right: "50%",
-          animation: "opacityBreath  1s steps(1) infinite",
-        },
-        // @ts-ignore
-        color: letter.status && `${letter.status}Letter`,
-      }}
+      className={cn(
+        "relative",
+        letter.status && letterColor[letter.status],
+        cursor &&
+          "before:content-['|'] before:text-caret before:absolute before:right-1/2 before:animate-caret",
+      )}
     >
       {letter.typed || letter.original}
-    </Text>
+    </span>
   ),
   (prevProps, nextProps) =>
     prevProps.letter.typed === nextProps.letter.typed &&

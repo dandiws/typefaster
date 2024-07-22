@@ -1,7 +1,7 @@
+import { cn } from "lib/utils";
 import type React from "react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Box, Flex, type SxStyleProp } from "theme-ui";
 import useTypingStore from "../store/typing";
 import actionType from "../store/typing/action";
 import Hotkey from "./Hotkey";
@@ -105,34 +105,14 @@ const TypingArea = memo(() => {
   }, [typing.typingStatus, focusInput]);
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-      }}
-    >
-      <Box
-        sx={
-          {
-            bg: "typingBackground",
-            borderRadius: 5,
-            p: 3,
-            filter: blur && "blur(5px)",
-            opacity: blur && 0.25,
-          } as unknown as SxStyleProp
-        }
+    <div className="relative">
+      <div
+        className={cn(
+          "bg-typingBackground rounded-lg p-3",
+          blur && "filter blur-[5px] opacity-25",
+        )}
       >
-        <Box
-          sx={{
-            px: 1,
-            fontFamily: "monospace",
-            fontSize: 21,
-            color: "GrayText",
-            height: 70,
-            overflow: "hidden",
-            lineHeight: "35px",
-            whiteSpace: "pre-wrap",
-          }}
-        >
+        <div className="px-1 font-mono text-xl text-zinc-500 h-[70px] overflow-hidden leading-[35px] whitespace-pre-wrap">
           <input
             ref={inputRef}
             type="text"
@@ -160,25 +140,13 @@ const TypingArea = memo(() => {
               }
             />
           ))}
-        </Box>
-      </Box>
+        </div>
+      </div>
       {blur && (
-        <Flex
+        // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+        <div
+          className="absolute w-full h-full left-0 top-0 justify-center items-center text-typingText font-bold cursor-pointer text-lg flex flex-col"
           onClick={handleOverlayClick}
-          sx={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-            color: "text",
-            fontWeight: 500,
-            cursor: "pointer",
-            fontSize: 20,
-            flexDirection: "column",
-          }}
         >
           {typing.typingStatus === "done" ? (
             <>
@@ -191,9 +159,9 @@ const TypingArea = memo(() => {
               Click or <Hotkey>Shift+F</Hotkey> to focus
             </span>
           )}
-        </Flex>
+        </div>
       )}
-    </Box>
+    </div>
   );
 });
 

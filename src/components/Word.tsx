@@ -1,5 +1,5 @@
+import { cn } from "lib/utils";
 import { memo } from "react";
-import { Text } from "theme-ui";
 import Letter from "utils/Letter";
 import type Word from "../utils/Word";
 import { isCorrectlyTyped } from "../utils/Word";
@@ -9,18 +9,13 @@ const WordComponent = memo(
   ({ word, cursorIndex }: { word: Word; cursorIndex?: number | null }) => {
     return (
       word.show && (
-        <Text ref={word.elRef} as="span">
-          <Text
+        <span ref={word.elRef}>
+          <span
             data-testid="word"
-            as="span"
-            sx={(theme) => ({
-              display: "inline-block",
-              textDecorationColor: theme.colors.incorrectLetter,
-              textDecoration:
-                word.isTyped && !isCorrectlyTyped(word)
-                  ? "line-through"
-                  : "none",
-            })}
+            className={cn(
+              "inline-block decoration-incorrectLetter",
+              word.isTyped && !isCorrectlyTyped(word) && "line-through",
+            )}
           >
             {word.letterSequence.map((l, i) => (
               <LetterComponent
@@ -29,12 +24,12 @@ const WordComponent = memo(
                 letter={l}
               />
             ))}
-          </Text>
+          </span>
           <LetterComponent
             cursor={!!cursorIndex && cursorIndex >= word.originalWord.length}
             letter={new Letter(" ")}
           />
-        </Text>
+        </span>
       )
     );
   },

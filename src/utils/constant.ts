@@ -19,7 +19,7 @@ export const duration = {
 } as const;
 
 export const theme = {
-  default: "Dark",
+  dark: "Dark",
   light: "Light",
   oneDarkPro: "One Dark Pro",
   monokai: "Monokai",
