@@ -5,7 +5,7 @@ import {
   useEffect,
   useReducer,
 } from "react";
-import type { Theme } from "utils/constant";
+import type { Language, Theme } from "utils/constant";
 import { type Config, createConfigStore } from "../../utils/store";
 import type { Action } from "./action";
 import configReducer from "./reducer";
@@ -26,6 +26,10 @@ export const ConfigStoreProvider = ({ children }: React.PropsWithChildren) => {
     const theme = localStorage.getItem("theme") as Theme | null;
     if (!theme) return;
     dispatch({ type: "CHANGE_THEME", payload: { theme } });
+
+    const lang = localStorage.getItem("lang") as Language | null;
+    if (!lang) return;
+    dispatch({ type: "CHANGE_LANGUAGE", payload: { lang } });
   }, []);
 
   return (
