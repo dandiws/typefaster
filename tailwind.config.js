@@ -28,6 +28,9 @@ module.exports = {
         caret: "var(--color-caret)",
         incorrectDecor: "var(--color-strikeColor)",
       },
+      fontFamily: {
+        mono: ["Geist Mono", "monospace"],
+      },
       keyframes: {
         opacityBreath: {
           "50%": {

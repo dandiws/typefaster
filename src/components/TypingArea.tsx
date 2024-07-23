@@ -112,7 +112,12 @@ const TypingArea = memo(() => {
           blur && "filter blur-[5px] opacity-25",
         )}
       >
-        <div className="px-1 font-mono text-xl text-zinc-500 h-[70px] overflow-hidden leading-[35px] whitespace-pre-wrap">
+        <div
+          className="px-1 font-mono text-xl md:text-2xl text-zinc-500 h-[calc(var(--row-count)_*_var(--line-height))] overflow-hidden !leading-[var(--line-height)] whitespace-pre-wrap"
+          style={
+            { "--line-height": "42px", "--row-count": 2 } as React.CSSProperties
+          }
+        >
           <input
             ref={inputRef}
             type="text"

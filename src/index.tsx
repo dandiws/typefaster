@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { ConfigStoreProvider } from "./store/config";
 
+import "unfonts.css";
 import "./index.css";
 // import reportWebVitals from './reportWebVitals'
 
