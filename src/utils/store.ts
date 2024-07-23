@@ -57,12 +57,12 @@ export function createConfigStore({
   lang = "id",
   mode = "time",
   duration = 60,
-  theme = "default",
+  theme,
 }: Partial<Config>): Config {
   return {
     lang,
     mode,
     duration,
-    theme,
+    theme: theme ?? "dark",
   };
 }

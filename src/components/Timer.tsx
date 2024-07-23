@@ -1,3 +1,4 @@
+import { cn } from "lib/utils";
 import { useEffect, useRef, useState } from "react";
 import useTypingStore from "../store/typing";
 import actionType from "../store/typing/action";
@@ -27,8 +28,32 @@ const Timer = ({ duration }: React.PropsWithChildren<{ duration: number }>) => {
   }, [typing.typingStatus, dispatch, duration]);
 
   return (
-    <div className="flex justify-center mb-4 text-2xl">
-      {timerCount === 0 ? "Times up!" : timerCount}
+    <div className="mb-[2px]">
+      <div className="flex justify-center mb-4 text-3xl font-bold">
+        {timerCount === 0 ? "Times up!" : timerCount}
+      </div>
+      <ProgressBar duration={duration} status={typing.typingStatus} />
+    </div>
+  );
+};
+
+const ProgressBar = ({
+  duration,
+  status,
+}: { duration: number; status: string }) => {
+  return (
+    <div className="w-full bg-typingBackground rounded-full h-[1px] overflow-hidden">
+      <div
+        className={cn(
+          "w-full h-full bg-foreground rounded-full transition-transform ease-linear",
+          status === "started" ? "animate-progress" : "-translate-x-full",
+        )}
+        style={
+          {
+            "--duration": `${duration}s`,
+          } as React.CSSProperties
+        }
+      />
     </div>
   );
 };

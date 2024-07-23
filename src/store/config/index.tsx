@@ -1,9 +1,8 @@
 import {
   type Dispatch,
-  type SetStateAction,
   createContext,
-  useCallback,
   useContext,
+  useEffect,
   useReducer,
 } from "react";
 import type { Theme } from "utils/constant";
@@ -22,6 +21,12 @@ export const ConfigStoreContext = createContext<ConfigContext | null>(null);
 
 export const ConfigStoreProvider = ({ children }: React.PropsWithChildren) => {
   const [config, dispatch] = useReducer(configReducer, initialStore);
+
+  useEffect(() => {
+    const theme = localStorage.getItem("theme") as Theme | null;
+    if (!theme) return;
+    dispatch({ type: "CHANGE_THEME", payload: { theme } });
+  }, []);
 
   return (
     <ConfigStoreContext.Provider

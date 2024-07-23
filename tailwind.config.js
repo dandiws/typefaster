@@ -20,12 +20,13 @@ module.exports = {
       colors: {
         background: "var(--color-background)",
         typingBackground: "var(--color-typingBackground)",
-        typingText: "var(--color-typingText)",
+        foreground: "var(--color-foreground)",
         untypedLetter: "var(--color-untypedLetter)",
         correctLetter: "var(--color-correctLetter)",
         incorrectLetter: "var(--color-incorrectLetter)",
         extraLetter: "var(--color-extraLetter)",
         caret: "var(--color-caret)",
+        incorrectDecor: "var(--color-strikeColor)",
       },
       keyframes: {
         opacityBreath: {
@@ -33,9 +34,14 @@ module.exports = {
             opacity: 0,
           },
         },
+        progress: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
       },
       animation: {
         caret: "opacityBreath 1s steps(1) infinite",
+        progress: "progress var(--duration) linear",
       },
     },
   },

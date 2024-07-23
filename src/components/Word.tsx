@@ -13,8 +13,10 @@ const WordComponent = memo(
           <span
             data-testid="word"
             className={cn(
-              "inline-block decoration-incorrectLetter",
-              word.isTyped && !isCorrectlyTyped(word) && "line-through",
+              "inline-block decoration-incorrectDecor",
+              word.isTyped &&
+                !isCorrectlyTyped(word) &&
+                "underline underline-offset-2",
             )}
           >
             {word.letterSequence.map((l, i) => (

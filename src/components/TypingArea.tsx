@@ -145,7 +145,7 @@ const TypingArea = memo(() => {
       {blur && (
         // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div
-          className="absolute w-full h-full left-0 top-0 justify-center items-center text-typingText font-bold cursor-pointer text-lg flex flex-col"
+          className="absolute w-full h-full left-0 top-0 justify-center items-center text-foreground font-bold cursor-pointer text-lg flex flex-col"
           onClick={handleOverlayClick}
         >
           {typing.typingStatus === "done" ? (

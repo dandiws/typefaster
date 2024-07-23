@@ -24,6 +24,11 @@ export const theme = {
   oneDarkPro: "One Dark Pro",
   monokai: "Monokai",
   pink: "Pink",
+  nord: "Nord",
+  dracula: "Dracula",
+  solarizedDark: "Solarized Dark",
+  paper: "Paper",
+  neonNight: "Neon Night",
 } as const;
 
 const constant = {
