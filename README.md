@@ -14,6 +14,6 @@ Typefaster is a clean and minimal typing test insipired by [Monkeytype](https://
 
 # Built with
 
-- React.js
-- Theme-ui
-- 💗
+- [React](https://reactjs.org)
+- [Typescript](https://www.typescriptlang.org)
+- [TailwindCSS](https://tailwindcss.com)
